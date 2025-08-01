@@ -4,6 +4,8 @@ import ProjectsSection from "./ProjectsSection";
 import SkillsSection from "./SkillsSection";
 import ArtSection from "./ArtSection";
 import ContactSection from "./ContactSection";
+import ContactMaintenance from "./NotWorking";
+
 
 const Home = () => {
   return (
@@ -21,7 +23,7 @@ const Home = () => {
       <ArtSection />
 
       {/* Contact Section */}
-      <ContactSection />
+      <ContactMaintenance />
 
       {/* Footer */}
       <footer className="py-8 text-center text-sm text-muted-foreground border-t border-border">
