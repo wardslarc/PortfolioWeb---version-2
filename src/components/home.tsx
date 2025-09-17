@@ -23,7 +23,7 @@ const Home = () => {
       <ArtSection />
 
       {/* Contact Section */}
-      <ContactMaintenance />
+      <ContactSection />
 
       {/* Footer */}
       <footer className="py-8 text-center text-sm text-muted-foreground border-t border-border">

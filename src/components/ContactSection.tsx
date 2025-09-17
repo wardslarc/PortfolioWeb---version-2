@@ -85,6 +85,8 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxs31_Yc_Sh8IwEo6yv1x2J4BKQ5mQ4rCPYhEpCvy22e4fvT4qKmmgqx0JgOb1T1cBp4A/exec";
+
 const ContactSection = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -121,6 +123,66 @@ const ContactSection = () => {
   });
 
   const onSubmit = async (data: FormValues) => {
+    const formFillTime = Date.now() - formStartTime;
+
+    if(formFillTime < 5000){
+      setRateLimitError("Please take more time to fill out the form.");
+      return;
+    }
+
+    const stored = sessionStorage.getItem("formSubmissions");
+    const currentTime = Date.now();
+    let submissions = stored ? JSON.parse(stored) : { count: 0, lastSubmission: 0};
+
+    if(currentTime - submissions.lastSubmission > TIME_WINDOW){
+      submissions.count = 0;
+    }
+
+    if(submissions.count >= MAX_SUBMISSIONS){
+      const hoursLeft = Math.ceil((TIME_WINDOW - (currentTime - submissions.lastSubmission)) / (60 * 60 * 1000));
+      setRateLimitError(`You've reached the submission limit. Please try again in ${hoursLeft} hours.`);
+      return;
+    }
+
+    setIsSubmitting(true);
+    setRateLimitError("");
+
+    try{
+      const sanitizedData = {
+        name:sanitizeInput(data.name),
+        email:sanitizeInput(data.email),
+        subject:sanitizeInput(data.subject),
+        message:sanitizeInput(data.message),
+        userAgent:navigator.userAgent,
+        clientTimestamp: data.timestamp,
+        fillDuration: formFillTime,
+      };
+    
+    await fetch(WEBAPP_URL, {
+        method: "POST",
+        mode: "no-cors", 
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(sanitizedData),
+      });
+
+      // ✅ We cannot read the response, so just assume success
+      const newCount = submissions.count + 1;
+      sessionStorage.setItem(
+        "formSubmissions",
+        JSON.stringify({ count: newCount, lastSubmission: currentTime })
+      );
+      setSubmissionCount(newCount);
+      setIsSubmitted(true);
+      form.reset();
+    } catch (error: any) {
+      console.log("Error submitting message: ", error);
+      setRateLimitError("There was an error submitting your message. Please try again later.");
+    } finally {
+      setIsSubmitting(false);
+    }
+    /*
     const formFillTime = Date.now() - formStartTime;
     if (formFillTime < 5000) {
       setRateLimitError("Please take more time to fill out the form.");
@@ -182,6 +244,7 @@ const ContactSection = () => {
     } finally {
       setIsSubmitting(false);
     }
+  */
   };
 
   return (

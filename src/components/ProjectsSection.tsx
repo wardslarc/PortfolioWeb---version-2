@@ -231,6 +231,15 @@ const defaultProjects: Project[] = [
     technologies: ["Reactjs", "Typescript", "Vite", "Firebase"],
     demoUrl: "https://carlsdaleescalo.com",
   },
+    {
+    id: "8",
+    title: "Marci Metzger Homes Website",
+    description: "A website for a real estate agent.",
+    image: "/marci.png",
+    category: "personal",
+    technologies: ["Reactjs", "Typescript", "Vite", "Firebase"],
+    demoUrl: "https://marcimetzger-orcin.vercel.app/",
+  },
 ];
 
 export default ProjectsSection;
