@@ -7,18 +7,43 @@ import SkillsSection from "./SkillsSection";
 import ArtSection from "./ArtSection";
 import ContactSection from "./ContactSection";
 
-// Floating Navigation
-const FloatingNav = ({ sections, activeSection, isVisible }) => {
+const FloatingNav = ({ sections, activeSection }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [visible, setVisible] = useState(true);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+
+      if (activeSection === "hero") {
+        setScrolled(currentY > 50); // background appears if scrolled
+        setVisible(true); // always visible in hero
+      } else {
+        // Other sections: fade out/in
+        if (currentY > lastScrollY.current) setVisible(false); // scrolling down
+        else setVisible(true); // scrolling up
+        setScrolled(currentY > 0); // background appears if scrolled
+      }
+
+      lastScrollY.current = currentY;
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [activeSection]);
 
   return (
     <nav
-      className={`fixed top-6 left-0 right-0 z-50 px-6 flex items-center justify-between transition-opacity duration-500 ${
-        isVisible ? "opacity-100" : "opacity-0"
-      }`}
+      className={`
+        fixed top-0 left-0 right-0 z-50 px-6 py-4
+        transform transition-all duration-500 ease-in-out
+        ${visible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-6"}
+      `}
     >
-      {/* Mobile: Hamburger on the left */}
-      <div className="md:hidden">
+      {/* Mobile Hamburger */}
+      <div className="md:hidden mt-6 flex justify-between items-center">
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="p-3 rounded-xl bg-gradient-to-br from-slate-900 to-slate-800 text-white shadow-lg"
@@ -27,32 +52,17 @@ const FloatingNav = ({ sections, activeSection, isVisible }) => {
         </button>
 
         {isOpen && (
-          <ul
-            className="
-              absolute top-14 left-6 
-              flex flex-col items-start space-y-3
-              rounded-2xl backdrop-blur-md
-              bg-gradient-to-br from-slate-900 to-slate-800
-              px-6 py-5 shadow-xl w-56
-              animate-in fade-in slide-in-from-left-2
-            "
-          >
+          <ul className="absolute top-14 left-6 flex flex-col items-start space-y-3 rounded-2xl backdrop-blur-md bg-slate-900/90 px-6 py-5 shadow-xl w-56 animate-in fade-in slide-in-from-left-2">
             {sections.map((section) => (
               <li key={section.id}>
                 <a
                   href={`#${section.id}`}
                   onClick={() => setIsOpen(false)}
-                  className={`
-                    block w-full font-bold 
-                    transition-colors 
-                    px-4 py-2 rounded-lg
-                    text-lg
-                    ${
-                      activeSection === section.id
-                        ? "text-primary bg-white shadow-md"
-                        : "text-white hover:text-black hover:bg-gradient-to-b hover:from-gray-100 hover:to-gray-300 hover:shadow-md"
-                    }
-                  `}
+                  className={`block w-full font-bold transition-colors px-4 py-2 rounded-lg text-lg ${
+                    activeSection === section.id
+                      ? "text-primary bg-white shadow-md"
+                      : "text-white hover:text-black hover:bg-gray-200"
+                  }`}
                 >
                   {section.label}
                 </a>
@@ -62,30 +72,32 @@ const FloatingNav = ({ sections, activeSection, isVisible }) => {
         )}
       </div>
 
-      {/* Desktop: Centered nav (slightly bigger, but not huge) */}
-      <div className="hidden md:flex justify-center w-full">
+      {/* Desktop Rounded Pill Nav */}
+      <div className="hidden md:flex justify-center mt-6">
         <ul
-          className="
-            flex items-center justify-center 
-            rounded-3xl backdrop-blur-md 
-            bg-gradient-to-br from-slate-900 to-slate-800
-            px-10 py-4
-            shadow-xl
-          "
+          className={`
+            flex justify-between items-center
+            w-full max-w-[calc(100%-400px)]
+            rounded-3xl
+            px-8 py-4
+            backdrop-blur-md
+            transition-colors duration-500 ease-in-out
+            mx-auto
+            ${scrolled ? "bg-slate-900/90 shadow-xl" : "bg-transparent"}
+          `}
         >
           {sections.map((section) => (
-            <li key={section.id} className="mx-3 lg:mx-5">
+            <li key={section.id} className="flex-1 mx-2">
               <a
                 href={`#${section.id}`}
                 className={`
-                  font-bold tracking-wide
-                  transition-colors 
-                  px-5 py-2 rounded-xl
+                  block text-center font-bold tracking-wide
+                  px-4 py-2 rounded-2xl transition-colors
                   text-lg lg:text-xl
                   ${
                     activeSection === section.id
                       ? "text-primary bg-white shadow-md"
-                      : "text-white hover:text-black hover:bg-gradient-to-b hover:from-gray-100 hover:to-gray-300 hover:shadow-md"
+                      : "text-white hover:text-black hover:bg-gray-200"
                   }
                 `}
               >
@@ -136,8 +148,6 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [progress, setProgress] = useState(0);
   const [activeSection, setActiveSection] = useState("hero");
-  const [navVisible, setNavVisible] = useState(true);
-  const lastScrollY = useRef(0);
 
   const sectionRefs = {
     hero: useRef(null),
@@ -155,22 +165,43 @@ const Home = () => {
     { id: "contact", label: "Contact" },
   ];
 
+  // Dynamic loading based on images
   useEffect(() => {
-    // Simulate loading
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setTimeout(() => setIsLoading(false), 500);
-          return 100;
-        }
-        const increment =
-          prev < 70 ? 10 : prev < 90 ? 5 : prev < 99 ? 2 : 1;
-        return prev + increment;
-      });
-    }, 200);
+    const images = Array.from(document.images);
+    let loadedCount = 0;
 
-    // Intersection Observer for active section
+    if (images.length === 0) {
+      setProgress(100);
+      setTimeout(() => setIsLoading(false), 100);
+      return;
+    }
+
+    const onImageLoad = () => {
+      loadedCount++;
+      setProgress(Math.floor((loadedCount / images.length) * 100));
+      if (loadedCount === images.length) {
+        setTimeout(() => setIsLoading(false), 200);
+      }
+    };
+
+    images.forEach((img) => {
+      if (img.complete) onImageLoad();
+      else {
+        img.addEventListener("load", onImageLoad);
+        img.addEventListener("error", onImageLoad);
+      }
+    });
+
+    return () => {
+      images.forEach((img) => {
+        img.removeEventListener("load", onImageLoad);
+        img.removeEventListener("error", onImageLoad);
+      });
+    };
+  }, []);
+
+  // Intersection Observer + smooth scroll
+  useEffect(() => {
     const observerOptions = {
       root: null,
       rootMargin: "-20% 0px -70% 0px",
@@ -178,59 +209,36 @@ const Home = () => {
     };
     const observerCallback = (entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setActiveSection(entry.target.id);
-        }
+        if (entry.isIntersecting) setActiveSection(entry.target.id);
       });
     };
-    const observer = new IntersectionObserver(
-      observerCallback,
-      observerOptions
-    );
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
     Object.values(sectionRefs).forEach((ref) => {
       if (ref.current) observer.observe(ref.current);
     });
 
-    // Smooth scroll
     const handleNavClick = (e) => {
       const href = e.currentTarget.getAttribute("href");
       if (href && href.startsWith("#")) {
         e.preventDefault();
         const targetId = href.substring(1);
         const targetElement = document.getElementById(targetId);
-        if (targetElement) {
+        if (targetElement)
           window.scrollTo({
             top: targetElement.offsetTop - 120,
             behavior: "smooth",
           });
-        }
       }
     };
+
     const navLinks = document.querySelectorAll("nav a");
-    navLinks.forEach((link) =>
-      link.addEventListener("click", handleNavClick)
-    );
+    navLinks.forEach((link) => link.addEventListener("click", handleNavClick));
 
-    // Scroll listener for nav visibility
-    const handleScroll = () => {
-      const currentY = window.scrollY;
-      if (currentY > lastScrollY.current) {
-        setNavVisible(false); // scrolling down
-      } else {
-        setNavVisible(true); // scrolling up
-      }
-      lastScrollY.current = currentY;
-    };
-    window.addEventListener("scroll", handleScroll);
-
-    // Cleanup
     return () => {
-      clearInterval(interval);
       observer.disconnect();
       navLinks.forEach((link) =>
         link.removeEventListener("click", handleNavClick)
       );
-      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
@@ -240,44 +248,26 @@ const Home = () => {
 
       <div
         className={`min-h-screen bg-background text-foreground ${
-          isLoading
-            ? "opacity-0"
-            : "opacity-100 transition-opacity duration-700"
+          isLoading ? "opacity-0" : "opacity-100 transition-opacity duration-700"
         }`}
       >
         {!isLoading && (
-          <FloatingNav
-            sections={sections}
-            activeSection={activeSection}
-            isVisible={navVisible}
-          />
+          <FloatingNav sections={sections} activeSection={activeSection} />
         )}
 
         <section id="hero" ref={sectionRefs.hero} className="scroll-mt-32">
           <HeroSection />
         </section>
-        <section
-          id="projects"
-          ref={sectionRefs.projects}
-          className="scroll-mt-32"
-        >
+        <section id="projects" ref={sectionRefs.projects} className="scroll-mt-32">
           <ProjectsSection />
         </section>
-        <section
-          id="skills"
-          ref={sectionRefs.skills}
-          className="scroll-mt-32"
-        >
+        <section id="skills" ref={sectionRefs.skills} className="scroll-mt-32">
           <SkillsSection />
         </section>
         <section id="art" ref={sectionRefs.art} className="scroll-mt-32">
           <ArtSection />
         </section>
-        <section
-          id="contact"
-          ref={sectionRefs.contact}
-          className="scroll-mt-32"
-        >
+        <section id="contact" ref={sectionRefs.contact} className="scroll-mt-32">
           <ContactSection />
         </section>
 

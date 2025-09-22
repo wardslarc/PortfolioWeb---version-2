@@ -292,6 +292,7 @@ const ContactSection = () => {
                   <CardTitle>Contact Form</CardTitle>
                   <CardDescription>
                     Fill out the form below to send me a message
+                    or send me a email:   admin@carlsdaleescalo.com
                     {submissionCount > 0 && (
                       <span className="block text-sm mt-2 text-yellow-600 dark:text-yellow-400">
                         Submissions remaining: {MAX_SUBMISSIONS - submissionCount}/{MAX_SUBMISSIONS} (24h)

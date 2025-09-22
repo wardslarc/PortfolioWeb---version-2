@@ -166,9 +166,21 @@ const HeroSection = () => {
           transition={{ delay: 1.5 }}
         >
           <Link to="projects" smooth={true} duration={600}>
-            <Button className="border border-sky-400 text-sky-400 hover:bg-sky-400 hover:text-white px-6 py-3 rounded-full bg-transparent">
+            <Button
+              className="
+                bg-white
+                text-slate-900
+                px-10 py-4
+                rounded-sm
+                font-bold
+                shadow-lg
+                hover:bg-gray-100
+                transition-all
+                flex items-center
+              "
+            >
               View My Work
-              <ArrowDown size={16} className="ml-2 animate-bounce" />
+              <ArrowDown size={18} className="ml-2 animate-bounce" />
             </Button>
           </Link>
         </motion.div>
