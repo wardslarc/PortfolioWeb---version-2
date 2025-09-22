@@ -27,9 +27,6 @@ import {
 } from "./ui/card";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 
-import { db } from "../firebase";
-import { collection, addDoc, Timestamp } from "firebase/firestore";
-
 const MAX_SUBMISSIONS = 3;
 const TIME_WINDOW = 24 * 60 * 60 * 1000;
 
