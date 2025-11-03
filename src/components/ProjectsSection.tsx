@@ -170,6 +170,15 @@ const ProjectsSection = ({ projects = defaultProjects }: ProjectsSectionProps) =
 const defaultProjects: Project[] = [
   {
     id: "7",
+    title: "Reflective Pomodoro",
+    description: "A website where users is prompt to reflect after a pomodoro session.",
+    image: "/pomodoro.png",
+    category: "personal",
+    technologies: ["React Js", "Typescript", "MongoDB", "Express"],
+    demoUrl: "https://www.reflectivepomodoro.com/",
+  },
+    {
+    id: "8",
     title: "Sticky White Board",
     description: "A collaborative whiteboard tool using React and Firebase. Still under development.",
     image: "/sticky.png",

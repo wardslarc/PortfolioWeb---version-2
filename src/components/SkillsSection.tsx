@@ -1,13 +1,14 @@
-import React from "react";
-import { motion } from "framer-motion";
-import { Progress } from "@/components/ui/progress";
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 interface SkillProps {
   name: string;
@@ -21,6 +22,9 @@ const SkillsSection = ({
 }: {
   skills?: SkillProps[];
 }) => {
+  const [showAll, setShowAll] = useState(false);
+  const displayedSkills = showAll ? skills : skills.slice(0, 6);
+
   return (
     <section id="skills" className="py-20 bg-slate-50 dark:bg-slate-900">
       <div className="container mx-auto px-4">
@@ -39,27 +43,40 @@ const SkillsSection = ({
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {skills.map((skill, index) => (
-            <SkillCard key={index} skill={skill} index={index} />
-          ))}
+          <AnimatePresence>
+            {displayedSkills.map((skill, index) => (
+              <SkillCard key={skill.name} skill={skill} index={index} />
+            ))}
+          </AnimatePresence>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          viewport={{ once: true }}
-          className="mt-20"
-        >
-          <h3 className="text-2xl font-bold mb-8 text-center">
-            Proficiency Levels
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            {skills.map((skill, index) => (
-              <SkillProgress key={index} skill={skill} index={index} />
-            ))}
-          </div>
-        </motion.div>
+        {skills.length > 6 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: true }}
+            className="flex justify-center mt-8"
+          >
+            <Button
+              onClick={() => setShowAll(!showAll)}
+              variant="outline"
+              className="flex items-center gap-2 px-6 py-3 border-2 border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            >
+              {showAll ? (
+                <>
+                  <ChevronUp size={20} />
+                  Show Less
+                </>
+              ) : (
+                <>
+                  <ChevronDown size={20} />
+                  Show More Skills
+                </>
+              )}
+            </Button>
+          </motion.div>
+        )}
       </div>
     </section>
   );
@@ -104,45 +121,6 @@ const SkillCard = ({ skill, index }: { skill: SkillProps; index: number }) => {
   );
 };
 
-const SkillProgress = ({
-  skill,
-  index,
-}: {
-  skill: SkillProps;
-  index: number;
-}) => {
-  const [progressValue, setProgressValue] = React.useState(0);
-
-  React.useEffect(() => {
-    const timer = setTimeout(
-      () => {
-        setProgressValue(skill.proficiency);
-      },
-      300 + index * 100,
-    );
-
-    return () => clearTimeout(timer);
-  }, [skill.proficiency, index]);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, x: -20 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      viewport={{ once: true }}
-      className="flex flex-col gap-2"
-    >
-      <div className="flex justify-between items-center">
-        <span className="font-medium">{skill.name}</span>
-        <span className="text-sm text-slate-500 dark:text-slate-400">
-          {skill.proficiency}%
-        </span>
-      </div>
-      <Progress value={progressValue} className="h-2" />
-    </motion.div>
-  );
-};
-
 const defaultSkills: SkillProps[] = [
   {
     name: "React",
@@ -168,21 +146,42 @@ const defaultSkills: SkillProps[] = [
     proficiency: 75,
     description: "Realtime apps and hosting using Firebase services",
   },
-{
-  name: "GoDaddy",
-  icon: "https://download.logo.wine/logo/GoDaddy/GoDaddy-Logo.wine.png",
-  proficiency: 70,
-  description: "Deploying and managing domains and hosting via GoDaddy",
-}
-
-,
+  {
+    name: "GoDaddy",
+    icon: "https://download.logo.wine/logo/GoDaddy/GoDaddy-Logo.wine.png",
+    proficiency: 70,
+    description: "Deploying and managing domains and hosting via GoDaddy",
+  },
   {
     name: "Vercel",
     icon: "https://assets.vercel.com/image/upload/front/favicon/vercel/180x180.png",
     proficiency: 85,
     description: "Hosting high-performance frontend apps with Vercel",
   },
+  {
+    name: "MongoDB",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg",
+    proficiency: 75,
+    description: "NoSQL database management and document-based data modeling",
+  },
+  {
+    name: "Cypress",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cypressio/cypressio-original.svg",
+    proficiency: 70,
+    description: "End-to-end testing and component testing for web applications",
+  },
+  {
+    name: "HTML",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg",
+    proficiency: 95,
+    description: "Semantic markup and modern HTML5 features",
+  },
+  {
+    name: "CSS",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg",
+    proficiency: 90,
+    description: "Advanced styling, layouts, animations and responsive design",
+  },
 ];
-
 
 export default SkillsSection;
