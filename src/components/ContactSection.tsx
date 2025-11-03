@@ -49,7 +49,31 @@ const ContactSection = () => {
   const [submissionCount, setSubmissionCount] = useState(0);
   const [lastSubmissionTime, setLastSubmissionTime] = useState(0);
   const [timeLeft, setTimeLeft] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Detect mobile devices and handle video loading
+  useEffect(() => {
+    const checkMobile = () => {
+      const mobile = window.innerWidth < 768; // 768px is typical tablet breakpoint
+      setIsMobile(mobile);
+      
+      // Only load video on non-mobile devices
+      if (!mobile && videoRef.current) {
+        videoRef.current.load();
+      }
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const handleVideoLoad = () => {
+    setIsVideoLoaded(true);
+  };
 
   // Load submission history from sessionStorage
   useEffect(() => {
@@ -224,20 +248,32 @@ const ContactSection = () => {
 
   return (
     <section id="contact" className="py-20 relative overflow-hidden">
-      {/* Beach Video Background */}
+      {/* Optimized Background */}
       <div className="absolute inset-0 z-0">
-        <video
-          ref={videoRef}
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="w-full h-full object-cover"
-          preload="metadata"
-        >
-          <source src="/beach.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
+        {!isMobile ? (
+          // Video background for desktop/tablet
+          <video
+            ref={videoRef}
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="w-full h-full object-cover"
+            preload="metadata"
+            onLoadedData={handleVideoLoad}
+            poster="/beach-poster.jpg" // Add a poster frame for faster initial load
+          >
+            <source src="/beach.mp4" type="video/mp4" />
+            <source src="/beach.webm" type="video/webm" /> {/* Add WebM format for better compression */}
+            Your browser does not support the video tag.
+          </video>
+        ) : (
+          // Static image background for mobile
+          <div 
+            className="w-full h-full object-cover bg-cover bg-center"
+            style={{ backgroundImage: "url('/beach-static.jpg')" }} // Use a compressed static image
+          />
+        )}
         <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px]"></div>
       </div>
 
@@ -269,7 +305,7 @@ const ContactSection = () => {
                   Thank you for your message! I'll get back to you as soon as possible.
                 </AlertDescription>
               </Alert>
-              <div className="flex gap-4">
+              <div className="flex gap-4 flex-col sm:flex-row">
                 <Button 
                   onClick={resetForm} 
                   className="flex-1 bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm"
