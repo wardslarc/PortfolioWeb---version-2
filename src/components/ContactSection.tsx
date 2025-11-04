@@ -250,14 +250,6 @@ const ContactSection = () => {
     form.reset();
   };
 
-  const resetRateLimit = () => {
-    sessionStorage.removeItem("formSubmissions");
-    setSubmissionCount(0);
-    setTimeLeft(0);
-    setLastSubmissionTime(0);
-    resetForm();
-  };
-
   const formatTimeLeft = (ms: number): string => {
     const hours = Math.floor(ms / (1000 * 60 * 60));
     const minutes = Math.ceil((ms % (1000 * 60 * 60)) / (1000 * 60));
@@ -353,18 +345,12 @@ const ContactSection = () => {
                   Thank you for your message! I'll get back to you as soon as possible.
                 </AlertDescription>
               </Alert>
-              <div className="flex gap-4 flex-col sm:flex-row">
+              <div className="flex justify-center">
                 <Button 
                   onClick={resetForm} 
-                  className="flex-1 bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm"
+                  className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm"
                 >
                   Send another message
-                </Button>
-              <Button 
-                  onClick={resetRateLimit}
-                  className="flex-1 bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm"
-                >
-                  Reset limits
                 </Button>
               </div>
             </motion.div>
