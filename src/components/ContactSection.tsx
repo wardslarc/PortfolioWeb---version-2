@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Send, CheckCircle, Clock } from "lucide-react";
+import { Send, CheckCircle, Clock, Loader2, Shield, Mail } from "lucide-react";
 
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -42,9 +42,18 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+type SubmissionStage = 
+  | 'idle' 
+  | 'validating' 
+  | 'checking_rate_limit' 
+  | 'sending' 
+  | 'success' 
+  | 'error';
+
 const ContactSection = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submissionStage, setSubmissionStage] = useState<SubmissionStage>('idle');
   const [rateLimitError, setRateLimitError] = useState("");
   const [submissionCount, setSubmissionCount] = useState(0);
   const [lastSubmissionTime, setLastSubmissionTime] = useState(0);
@@ -56,10 +65,9 @@ const ContactSection = () => {
   // Detect mobile devices and handle video loading
   useEffect(() => {
     const checkMobile = () => {
-      const mobile = window.innerWidth < 768; // 768px is typical tablet breakpoint
+      const mobile = window.innerWidth < 768;
       setIsMobile(mobile);
       
-      // Only load video on non-mobile devices
       if (!mobile && videoRef.current) {
         videoRef.current.load();
       }
@@ -91,7 +99,6 @@ const ContactSection = () => {
           }
         }
       } catch (error) {
-        // Clear corrupted data
         sessionStorage.removeItem("formSubmissions");
       }
     }
@@ -151,19 +158,33 @@ const ContactSection = () => {
   };
 
   const onSubmit = async (data: FormValues) => {
+    setIsSubmitting(true);
+    setSubmissionStage('validating');
+    setRateLimitError("");
+
+    // Simulate validation delay
+    await new Promise(resolve => setTimeout(resolve, 800));
+
+    // Check honeypot
+    if (data.honeypot) {
+      setSubmissionStage('error');
+      setRateLimitError("Invalid submission");
+      setIsSubmitting(false);
+      return;
+    }
+
+    setSubmissionStage('checking_rate_limit');
+    await new Promise(resolve => setTimeout(resolve, 500));
+
     const rateLimitCheck = checkRateLimit();
     if (!rateLimitCheck.allowed) {
+      setSubmissionStage('error');
       setRateLimitError(rateLimitCheck.message || "Rate limit exceeded");
+      setIsSubmitting(false);
       return;
     }
 
-    if (data.honeypot) {
-      setRateLimitError("Invalid submission");
-      return;
-    }
-
-    setIsSubmitting(true);
-    setRateLimitError("");
+    setSubmissionStage('sending');
 
     try {
       const response = await fetch(API_URL, {
@@ -210,10 +231,12 @@ const ContactSection = () => {
         })
       );
       
+      setSubmissionStage('success');
       setIsSubmitted(true);
       form.reset();
 
     } catch (error: any) {
+      setSubmissionStage('error');
       setRateLimitError(error.message || "There was an error submitting your message. Please try again later.");
     } finally {
       setIsSubmitting(false);
@@ -222,6 +245,7 @@ const ContactSection = () => {
 
   const resetForm = () => {
     setIsSubmitted(false);
+    setSubmissionStage('idle');
     setRateLimitError("");
     form.reset();
   };
@@ -244,6 +268,32 @@ const ContactSection = () => {
     return `${minutes}m`;
   };
 
+  const getStageMessage = (stage: SubmissionStage): string => {
+    switch (stage) {
+      case 'validating':
+        return "Validating your message...";
+      case 'checking_rate_limit':
+        return "Checking submission limits...";
+      case 'sending':
+        return "Sending your message...";
+      default:
+        return "Processing your request...";
+    }
+  };
+
+  const getStageIcon = (stage: SubmissionStage) => {
+    switch (stage) {
+      case 'validating':
+        return <Shield className="h-5 w-5" />;
+      case 'checking_rate_limit':
+        return <Clock className="h-5 w-5" />;
+      case 'sending':
+        return <Mail className="h-5 w-5" />;
+      default:
+        return <Loader2 className="h-5 w-5 animate-spin" />;
+    }
+  };
+
   const isRateLimited = timeLeft > 0 && submissionCount >= MAX_SUBMISSIONS;
 
   return (
@@ -251,7 +301,6 @@ const ContactSection = () => {
       {/* Optimized Background */}
       <div className="absolute inset-0 z-0">
         {!isMobile ? (
-          // Video background for desktop/tablet
           <video
             ref={videoRef}
             autoPlay
@@ -261,17 +310,16 @@ const ContactSection = () => {
             className="w-full h-full object-cover"
             preload="metadata"
             onLoadedData={handleVideoLoad}
-            poster="/beach-poster.jpg" // Add a poster frame for faster initial load
+            poster="/beach-poster.jpg"
           >
             <source src="/beach.mp4" type="video/mp4" />
-            <source src="/beach.webm" type="video/webm" /> {/* Add WebM format for better compression */}
+            <source src="/beach.webm" type="video/webm" />
             Your browser does not support the video tag.
           </video>
         ) : (
-          // Static image background for mobile
           <div 
             className="w-full h-full object-cover bg-cover bg-center"
-            style={{ backgroundImage: "url('/beach-static.jpg')" }} // Use a compressed static image
+            style={{ backgroundImage: "url('/beach-static.jpg')" }}
           />
         )}
         <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px]"></div>
@@ -312,10 +360,9 @@ const ContactSection = () => {
                 >
                   Send another message
                 </Button>
-                <Button 
-                  variant="outline"
+              <Button 
                   onClick={resetRateLimit}
-                  className="flex-1 border-white/30 text-white hover:bg-white/10 backdrop-blur-sm"
+                  className="flex-1 bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm"
                 >
                   Reset limits
                 </Button>
@@ -341,8 +388,56 @@ const ContactSection = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
+                  {/* Loading Overlay */}
+                  {isSubmitting && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="absolute inset-0 bg-black/50 backdrop-blur-sm rounded-lg z-20 flex items-center justify-center"
+                    >
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="bg-white/20 backdrop-blur-md rounded-lg p-6 max-w-sm mx-4 border border-white/30"
+                      >
+                        <div className="flex items-center gap-3 mb-4">
+                          <div className="animate-spin text-white">
+                            <Loader2 className="h-6 w-6" />
+                          </div>
+                          <h3 className="text-white font-semibold">Processing your message</h3>
+                        </div>
+                        
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-2 text-white/80">
+                            {getStageIcon(submissionStage)}
+                            <span className="text-sm">{getStageMessage(submissionStage)}</span>
+                          </div>
+                          
+                          {/* Progress indicator */}
+                          <div className="w-full bg-white/20 rounded-full h-1.5">
+                            <motion.div 
+                              className="bg-white h-1.5 rounded-full"
+                              initial={{ width: "0%" }}
+                              animate={{ 
+                                width: 
+                                  submissionStage === 'validating' ? '25%' :
+                                  submissionStage === 'checking_rate_limit' ? '50%' :
+                                  submissionStage === 'sending' ? '85%' : '100%'
+                              }}
+                              transition={{ duration: 0.5 }}
+                            />
+                          </div>
+                          
+                          <p className="text-xs text-white/60 text-center">
+                            This may take a few moments...
+                          </p>
+                        </div>
+                      </motion.div>
+                    </motion.div>
+                  )}
+
                   <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 relative">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <FormField
                           control={form.control}
@@ -457,7 +552,7 @@ const ContactSection = () => {
 
                       <Button
                         type="submit"
-                        className="w-full bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-200"
+                        className="w-full bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-200 relative"
                         disabled={isSubmitting || isRateLimited}
                         size="lg"
                       >
@@ -469,7 +564,7 @@ const ContactSection = () => {
                         ) : isSubmitting ? (
                           <div className="flex items-center gap-2">
                             <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                            <span>Sending Message...</span>
+                            <span>Processing...</span>
                           </div>
                         ) : (
                           <>
