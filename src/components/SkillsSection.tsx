@@ -13,7 +13,6 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 interface SkillProps {
   name: string;
   icon: string;
-  proficiency: number;
   description: string;
 }
 
@@ -123,64 +122,64 @@ const SkillCard = ({ skill, index }: { skill: SkillProps; index: number }) => {
 
 const defaultSkills: SkillProps[] = [
   {
-    name: "React",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
-    proficiency: 90,
-    description: "Building interactive UIs with React and its ecosystem",
+    name: "JavaScript",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg",
+    description: "Modern ES6+ JavaScript, DOM manipulation, and asynchronous programming",
   },
   {
-    name: "Tailwind CSS",
-    icon: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Tailwind_CSS_Logo.svg",
-    proficiency: 85,
-    description: "Creating responsive designs with utility-first CSS",
+    name: "React",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
+    description: "Building interactive UIs with React and its ecosystem",
   },
   {
     name: "TypeScript",
     icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg",
-    proficiency: 80,
     description: "Developing type-safe applications with TypeScript",
   },
   {
-    name: "Firebase",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg",
-    proficiency: 75,
-    description: "Realtime apps and hosting using Firebase services",
+    name: "Git",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg",
+    description: "Version control, branching strategies, and collaborative development",
   },
   {
-    name: "GoDaddy",
-    icon: "https://download.logo.wine/logo/GoDaddy/GoDaddy-Logo.wine.png",
-    proficiency: 70,
-    description: "Deploying and managing domains and hosting via GoDaddy",
+    name: "GitHub",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg",
+    description: "Code collaboration, pull requests, and project management",
   },
   {
-    name: "Vercel",
-    icon: "https://assets.vercel.com/image/upload/front/favicon/vercel/180x180.png",
-    proficiency: 85,
-    description: "Hosting high-performance frontend apps with Vercel",
-  },
-  {
-    name: "MongoDB",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg",
-    proficiency: 75,
-    description: "NoSQL database management and document-based data modeling",
-  },
-  {
-    name: "Cypress",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cypressio/cypressio-original.svg",
-    proficiency: 70,
-    description: "End-to-end testing and component testing for web applications",
+    name: "Tailwind CSS",
+    icon: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Tailwind_CSS_Logo.svg",
+    description: "Creating responsive designs with utility-first CSS",
   },
   {
     name: "HTML",
     icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg",
-    proficiency: 95,
     description: "Semantic markup and modern HTML5 features",
   },
   {
     name: "CSS",
     icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg",
-    proficiency: 90,
     description: "Advanced styling, layouts, animations and responsive design",
+  },
+  {
+    name: "Firebase",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg",
+    description: "Realtime apps and hosting using Firebase services",
+  },
+  {
+    name: "GoDaddy",
+    icon: "https://download.logo.wine/logo/GoDaddy/GoDaddy-Logo.wine.png",
+    description: "Deploying and managing domains and hosting via GoDaddy",
+  },
+  {
+    name: "Vercel",
+    icon: "https://assets.vercel.com/image/upload/front/favicon/vercel/180x180.png",
+    description: "Hosting high-performance frontend apps with Vercel",
+  },
+  {
+    name: "MongoDB",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg",
+    description: "NoSQL database management and document-based data modeling",
   },
 ];
 
