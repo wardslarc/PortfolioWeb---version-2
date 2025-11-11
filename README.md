@@ -14,17 +14,17 @@
 
 Check out the website here: [https://carlsdaleescalo.com](https://carlsdaleescalo.com)
 
-**Landing Page:**
-![Landing Page](https://drive.google.com/file/d/167qxergtc4Jg4L4vBDwvPnjn3eQHQcUl/view?usp=sharing)
+**Landing Page:**  
+![Landing Page](./assets/landing.png)
 
-**Portfolio Section:**
-![Portfolio](https://drive.google.com/file/d/19cGJWvQztu0ozCjnhxJ7IGkgm1um0JG0/view?usp=sharing)
+**Portfolio Section:**  
+![Portfolio](./assets/webprojects.png)
 
-**Art Gallery:**
-![Art Gallery](https://drive.google.com/file/d/1qz7EsbMcjs8haXKPXxd03v-2_zBgPEIN/view?usp=sharing)
+**Art Gallery:**  
+![Art Gallery](./assets/artgallery.png)
 
-**Contact Form:**
-![Contact Form](https://drive.google.com/file/d/1LpnAevdJmI9_siVpjI6m0qZxYG_SH0Uc/view?usp=sharing)
+**Contact Form:**  
+![Contact Form](./assets/getintouch.png)
 
 ---
 
