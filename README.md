@@ -1,55 +1,51 @@
-# carlsdaleescalo.com
+# carlsdaleescalo.com 🌐
 
-Welcome to **carlsdaleescalo.com**, the personal website of Carls Dale Escalo. This website serves as an online portfolio, showcasing web projects, digital artwork, skills, and a way to get in touch directly. It is designed to provide a clean, professional, and interactive experience for visitors.
+[![Website](https://img.shields.io/badge/Website-Live-brightgreen)](https://carlsdaleescalo.com)
+[![License](https://img.shields.io/badge/License-Personal-blue)](https://github.com/yourusername/carlsdaleescalo.com)
+[![Built With React](https://img.shields.io/badge/Built%20With-React-blue?logo=react)](https://reactjs.org)
+[![Vite](https://img.shields.io/badge/Dev-Setup%20Vite-red)](https://vitejs.dev)
+[![MongoDB](https://img.shields.io/badge/Database-MongoDB-green?logo=mongodb)](https://www.mongodb.com/)
 
----
-
-## 🌐 Website Overview
-
-The website is structured into several sections:
-
-1. **Landing Page**
-   - A visually appealing introduction to Carls Dale Escalo.
-   - Includes a navigation menu for easy scrolling to different sections.
-
-2. **Portfolio**
-   - Showcases web development projects.
-   - Each project includes details, screenshots, and links (if available).
-
-3. **Skills & Technologies**
-   - Highlights the technologies and tools used in development.
-   - Provides a clear overview of technical expertise.
-
-4. **Art Gallery**
-   - Displays personal drawings and digital artwork.
-   - Designed as an interactive gallery for users to view artwork.
-
-5. **Get in Touch**
-   - A contact form that allows visitors to reach out.
-   - The form is connected to an API Gateway that:
-     - Validates user input.
-     - Sends inquiries to Carls via email.
-     - Sends a confirmation email to the user with their submitted information.
+> Personal portfolio website of Carls Dale Escalo, showcasing web projects, digital artwork, technical skills, and a way to get in touch.
 
 ---
 
-## ⚡ Features
+## 📸 Live Demo
 
-- Fully responsive landing page and portfolio.
-- Interactive art gallery.
-- Smooth scrolling and navigation between sections.
-- Contact form with real-time input validation.
-- Automated email notifications for both the site owner and users.
-- Clean and modern UI/UX design.
+Check out the website here: [https://carlsdaleescalo.com](https://carlsdaleescalo.com)
+
+**Landing Page:**
+![Landing Page](https://drive.google.com/file/d/167qxergtc4Jg4L4vBDwvPnjn3eQHQcUl/view?usp=sharing)
+
+**Portfolio Section:**
+![Portfolio](https://drive.google.com/file/d/19cGJWvQztu0ozCjnhxJ7IGkgm1um0JG0/view?usp=sharing)
+
+**Art Gallery:**
+![Art Gallery](https://drive.google.com/file/d/1qz7EsbMcjs8haXKPXxd03v-2_zBgPEIN/view?usp=sharing)
+
+**Contact Form:**
+![Contact Form](https://drive.google.com/file/d/1LpnAevdJmI9_siVpjI6m0qZxYG_SH0Uc/view?usp=sharing)
+
+---
+
+## 🏗️ Features
+
+- **Landing Page:** Clean and interactive introduction.
+- **Portfolio:** Showcase of web projects with details and links.
+- **Skills & Technologies:** Highlights tech stack and tools.
+- **Art Gallery:** Digital drawings displayed in an interactive gallery.
+- **Get in Touch:**  
+  - Contact form connected to **MongoDB**.  
+  - Form validates user input.  
+  - Stores inquiries in MongoDB.  
+  - Sends confirmation email to users and notifies the site owner.
 
 ---
 
 ## 🛠️ Technologies Used
 
-- **Frontend:** HTML, CSS, JavaScript
-- **Frameworks/Libraries:** React, Vite
-- **Backend/API:** API Gateway for form handling and email notifications
-- **Database:** MongoDB for contact form(emails handled via API)
-- **Additional Tools:** Email integration, form validation
-
----
+- **Frontend:** React, Vite, HTML, CSS, JavaScript
+- **Backend/API:** Node.js, Express.js
+- **Database:** MongoDB (storing contact form submissions)
+- **Email Notifications:** NodeMailer or integrated email service
+- **Additional Tools:** Form validation, responsive UI
