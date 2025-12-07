@@ -29,7 +29,8 @@ import { Alert, AlertDescription } from "./ui/alert";
 
 const MAX_SUBMISSIONS = 3;
 const TIME_WINDOW = 24 * 60 * 60 * 1000;
-const API_URL = "https://portfolio-api-beta-ivory.vercel.app/api/contact/submit";
+const API_URL =
+  "https://portfolio-api-beta-ivory.vercel.app/api/contact/submit";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -42,18 +43,19 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-type SubmissionStage = 
-  | 'idle' 
-  | 'validating' 
-  | 'checking_rate_limit' 
-  | 'sending' 
-  | 'success' 
-  | 'error';
+type SubmissionStage =
+  | "idle"
+  | "validating"
+  | "checking_rate_limit"
+  | "sending"
+  | "success"
+  | "error";
 
 const ContactSection = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submissionStage, setSubmissionStage] = useState<SubmissionStage>('idle');
+  const [submissionStage, setSubmissionStage] =
+    useState<SubmissionStage>("idle");
   const [rateLimitError, setRateLimitError] = useState("");
   const [submissionCount, setSubmissionCount] = useState(0);
   const [lastSubmissionTime, setLastSubmissionTime] = useState(0);
@@ -67,16 +69,16 @@ const ContactSection = () => {
     const checkMobile = () => {
       const mobile = window.innerWidth < 768;
       setIsMobile(mobile);
-      
+
       if (!mobile && videoRef.current) {
         videoRef.current.load();
       }
     };
 
     checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    return () => window.removeEventListener('resize', checkMobile);
+    window.addEventListener("resize", checkMobile);
+
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   const handleVideoLoad = () => {
@@ -91,7 +93,7 @@ const ContactSection = () => {
         const submissions = JSON.parse(storedSubmissions);
         setSubmissionCount(submissions.count || 0);
         setLastSubmissionTime(submissions.lastSubmission || 0);
-        
+
         if (submissions.count >= MAX_SUBMISSIONS) {
           const timeSinceLast = Date.now() - submissions.lastSubmission;
           if (timeSinceLast < TIME_WINDOW) {
@@ -109,7 +111,7 @@ const ContactSection = () => {
     if (timeLeft <= 0) return;
 
     const timer = setInterval(() => {
-      setTimeLeft(prev => {
+      setTimeLeft((prev) => {
         if (prev <= 1000) {
           clearInterval(timer);
           return 0;
@@ -135,7 +137,7 @@ const ContactSection = () => {
 
   const checkRateLimit = (): { allowed: boolean; message?: string } => {
     const currentTime = Date.now();
-    
+
     if (currentTime - lastSubmissionTime > TIME_WINDOW) {
       setSubmissionCount(0);
       setLastSubmissionTime(0);
@@ -146,11 +148,12 @@ const ContactSection = () => {
     if (submissionCount >= MAX_SUBMISSIONS) {
       const hoursLeft = Math.ceil(timeLeft / (60 * 60 * 1000));
       const minutesLeft = Math.ceil(timeLeft / (60 * 1000));
-      
-      const message = hoursLeft > 1 
-        ? `You've reached the submission limit. Please try again in ${hoursLeft} hours.`
-        : `You've reached the submission limit. Please try again in ${minutesLeft} minutes.`;
-      
+
+      const message =
+        hoursLeft > 1
+          ? `You've reached the submission limit. Please try again in ${hoursLeft} hours.`
+          : `You've reached the submission limit. Please try again in ${minutesLeft} minutes.`;
+
       return { allowed: false, message };
     }
 
@@ -159,32 +162,32 @@ const ContactSection = () => {
 
   const onSubmit = async (data: FormValues) => {
     setIsSubmitting(true);
-    setSubmissionStage('validating');
+    setSubmissionStage("validating");
     setRateLimitError("");
 
     // Simulate validation delay
-    await new Promise(resolve => setTimeout(resolve, 800));
+    await new Promise((resolve) => setTimeout(resolve, 800));
 
     // Check honeypot
     if (data.honeypot) {
-      setSubmissionStage('error');
+      setSubmissionStage("error");
       setRateLimitError("Invalid submission");
       setIsSubmitting(false);
       return;
     }
 
-    setSubmissionStage('checking_rate_limit');
-    await new Promise(resolve => setTimeout(resolve, 500));
+    setSubmissionStage("checking_rate_limit");
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     const rateLimitCheck = checkRateLimit();
     if (!rateLimitCheck.allowed) {
-      setSubmissionStage('error');
+      setSubmissionStage("error");
       setRateLimitError(rateLimitCheck.message || "Rate limit exceeded");
       setIsSubmitting(false);
       return;
     }
 
-    setSubmissionStage('sending');
+    setSubmissionStage("sending");
 
     try {
       const response = await fetch(API_URL, {
@@ -194,20 +197,24 @@ const ContactSection = () => {
         },
         body: JSON.stringify({
           ...data,
-          timestamp: Date.now()
+          timestamp: Date.now(),
         }),
       });
 
       if (response.status === 429) {
-        const resetTime = response.headers.get('Retry-After');
+        const resetTime = response.headers.get("Retry-After");
         let waitTime = TIME_WINDOW;
-        
+
         if (resetTime) {
           waitTime = parseInt(resetTime) * 1000;
         }
-        
+
         setTimeLeft(waitTime);
-        throw new Error(`Rate limit exceeded. Please try again in ${Math.ceil(waitTime / (60 * 1000))} minutes.`);
+        throw new Error(
+          `Rate limit exceeded. Please try again in ${Math.ceil(
+            waitTime / (60 * 1000)
+          )} minutes.`
+        );
       }
 
       if (!response.ok) {
@@ -219,25 +226,27 @@ const ContactSection = () => {
       // Update submission count
       const newCount = submissionCount + 1;
       const currentTime = Date.now();
-      
+
       setSubmissionCount(newCount);
       setLastSubmissionTime(currentTime);
-      
+
       sessionStorage.setItem(
         "formSubmissions",
-        JSON.stringify({ 
-          count: newCount, 
-          lastSubmission: currentTime 
+        JSON.stringify({
+          count: newCount,
+          lastSubmission: currentTime,
         })
       );
-      
-      setSubmissionStage('success');
+
+      setSubmissionStage("success");
       setIsSubmitted(true);
       form.reset();
-
     } catch (error: any) {
-      setSubmissionStage('error');
-      setRateLimitError(error.message || "There was an error submitting your message. Please try again later.");
+      setSubmissionStage("error");
+      setRateLimitError(
+        error.message ||
+          "There was an error submitting your message. Please try again later."
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -245,7 +254,7 @@ const ContactSection = () => {
 
   const resetForm = () => {
     setIsSubmitted(false);
-    setSubmissionStage('idle');
+    setSubmissionStage("idle");
     setRateLimitError("");
     form.reset();
   };
@@ -253,7 +262,7 @@ const ContactSection = () => {
   const formatTimeLeft = (ms: number): string => {
     const hours = Math.floor(ms / (1000 * 60 * 60));
     const minutes = Math.ceil((ms % (1000 * 60 * 60)) / (1000 * 60));
-    
+
     if (hours > 0) {
       return `${hours}h ${minutes}m`;
     }
@@ -262,11 +271,11 @@ const ContactSection = () => {
 
   const getStageMessage = (stage: SubmissionStage): string => {
     switch (stage) {
-      case 'validating':
+      case "validating":
         return "Validating your message...";
-      case 'checking_rate_limit':
+      case "checking_rate_limit":
         return "Checking submission limits...";
-      case 'sending':
+      case "sending":
         return "Sending your message...";
       default:
         return "Processing your request...";
@@ -275,11 +284,11 @@ const ContactSection = () => {
 
   const getStageIcon = (stage: SubmissionStage) => {
     switch (stage) {
-      case 'validating':
+      case "validating":
         return <Shield className="h-5 w-5" />;
-      case 'checking_rate_limit':
+      case "checking_rate_limit":
         return <Clock className="h-5 w-5" />;
-      case 'sending':
+      case "sending":
         return <Mail className="h-5 w-5" />;
       default:
         return <Loader2 className="h-5 w-5 animate-spin" />;
@@ -305,13 +314,12 @@ const ContactSection = () => {
             poster="/beach-poster.jpg"
           >
             <source src="/beach.mp4" type="video/mp4" />
-            <source src="/beach.webm" type="video/webm" />
             Your browser does not support the video tag.
           </video>
         ) : (
-          <div 
+          <div
             className="w-full h-full object-cover bg-cover bg-center"
-            style={{ backgroundImage: "url('/beach-static.jpg')" }}
+            style={{ backgroundImage: "url('/beachstatic.jpg')" }}
           />
         )}
         <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px]"></div>
@@ -325,7 +333,9 @@ const ContactSection = () => {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">Get In Touch</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">
+            Get In Touch
+          </h2>
           <p className="text-white/90 max-w-2xl mx-auto text-lg">
             Have a project in mind or want to collaborate? Feel free to reach
             out using the form below.
@@ -342,12 +352,13 @@ const ContactSection = () => {
               <Alert className="bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 mb-6 backdrop-blur-sm">
                 <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
                 <AlertDescription className="ml-2 text-green-800 dark:text-green-300">
-                  Thank you for your message! I'll get back to you as soon as possible.
+                  Thank you for your message! I'll get back to you as soon as
+                  possible.
                 </AlertDescription>
               </Alert>
               <div className="flex justify-center">
-                <Button 
-                  onClick={resetForm} 
+                <Button
+                  onClick={resetForm}
                   className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm"
                 >
                   Send another message
@@ -368,7 +379,8 @@ const ContactSection = () => {
                     Fill out the form below to send me a message
                     {submissionCount > 0 && (
                       <span className="block text-sm mt-1">
-                        Submissions: {submissionCount}/{MAX_SUBMISSIONS} (resets in 24 hours)
+                        Submissions: {submissionCount}/{MAX_SUBMISSIONS} (resets
+                        in 24 hours)
                       </span>
                     )}
                   </CardDescription>
@@ -390,30 +402,38 @@ const ContactSection = () => {
                           <div className="animate-spin text-white">
                             <Loader2 className="h-6 w-6" />
                           </div>
-                          <h3 className="text-white font-semibold">Processing your message</h3>
+                          <h3 className="text-white font-semibold">
+                            Processing your message
+                          </h3>
                         </div>
-                        
+
                         <div className="space-y-3">
                           <div className="flex items-center gap-2 text-white/80">
                             {getStageIcon(submissionStage)}
-                            <span className="text-sm">{getStageMessage(submissionStage)}</span>
+                            <span className="text-sm">
+                              {getStageMessage(submissionStage)}
+                            </span>
                           </div>
-                          
+
                           {/* Progress indicator */}
                           <div className="w-full bg-white/20 rounded-full h-1.5">
-                            <motion.div 
+                            <motion.div
                               className="bg-white h-1.5 rounded-full"
                               initial={{ width: "0%" }}
-                              animate={{ 
-                                width: 
-                                  submissionStage === 'validating' ? '25%' :
-                                  submissionStage === 'checking_rate_limit' ? '50%' :
-                                  submissionStage === 'sending' ? '85%' : '100%'
+                              animate={{
+                                width:
+                                  submissionStage === "validating"
+                                    ? "25%"
+                                    : submissionStage === "checking_rate_limit"
+                                    ? "50%"
+                                    : submissionStage === "sending"
+                                    ? "85%"
+                                    : "100%",
                               }}
                               transition={{ duration: 0.5 }}
                             />
                           </div>
-                          
+
                           <p className="text-xs text-white/60 text-center">
                             This may take a few moments...
                           </p>
@@ -423,14 +443,19 @@ const ContactSection = () => {
                   )}
 
                   <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 relative">
+                    <form
+                      onSubmit={form.handleSubmit(onSubmit)}
+                      className="space-y-6 relative"
+                    >
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <FormField
                           control={form.control}
                           name="name"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-white">Name *</FormLabel>
+                              <FormLabel className="text-white">
+                                Name *
+                              </FormLabel>
                               <FormControl>
                                 <Input
                                   placeholder="Your name"
@@ -448,7 +473,9 @@ const ContactSection = () => {
                           name="email"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-white">Email *</FormLabel>
+                              <FormLabel className="text-white">
+                                Email *
+                              </FormLabel>
                               <FormControl>
                                 <Input
                                   placeholder="your.email@example.com"
@@ -463,13 +490,15 @@ const ContactSection = () => {
                           )}
                         />
                       </div>
-                      
+
                       <FormField
                         control={form.control}
                         name="subject"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-white">Subject *</FormLabel>
+                            <FormLabel className="text-white">
+                              Subject *
+                            </FormLabel>
                             <FormControl>
                               <Input
                                 placeholder="What is this regarding?"
@@ -482,13 +511,15 @@ const ContactSection = () => {
                           </FormItem>
                         )}
                       />
-                      
+
                       <FormField
                         control={form.control}
                         name="message"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-white">Message *</FormLabel>
+                            <FormLabel className="text-white">
+                              Message *
+                            </FormLabel>
                             <FormControl>
                               <Textarea
                                 placeholder="Write your message here..."
@@ -509,10 +540,12 @@ const ContactSection = () => {
                           name="honeypot"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-white">Do not fill this out</FormLabel>
+                              <FormLabel className="text-white">
+                                Do not fill this out
+                              </FormLabel>
                               <FormControl>
-                                <Input 
-                                  {...field} 
+                                <Input
+                                  {...field}
                                   tabIndex={-1}
                                   autoComplete="off"
                                 />
@@ -523,7 +556,10 @@ const ContactSection = () => {
                       </div>
 
                       {rateLimitError && (
-                        <Alert variant="destructive" className="backdrop-blur-sm">
+                        <Alert
+                          variant="destructive"
+                          className="backdrop-blur-sm"
+                        >
                           <Clock className="h-4 w-4" />
                           <AlertDescription>
                             {rateLimitError}
@@ -554,7 +590,7 @@ const ContactSection = () => {
                           </div>
                         ) : (
                           <>
-                            <Send className="mr-2 h-4 w-4" /> 
+                            <Send className="mr-2 h-4 w-4" />
                             Send Message
                           </>
                         )}
