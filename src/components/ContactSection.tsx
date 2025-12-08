@@ -311,7 +311,7 @@ const ContactSection = () => {
             className="w-full h-full object-cover"
             preload="metadata"
             onLoadedData={handleVideoLoad}
-            poster="/beach-poster.jpg"
+            poster="/beach-static.jpg"
           >
             <source src="/beach.mp4" type="video/mp4" />
             Your browser does not support the video tag.
