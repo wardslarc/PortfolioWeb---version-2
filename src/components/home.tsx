@@ -5,6 +5,7 @@ import ProjectsSection from "./ProjectsSection";
 import SkillsSection from "./SkillsSection";
 import ArtSection from "./ArtSection";
 import ContactSection from "./ContactSection";
+import ChatBot from "./ChatBot";
 
 // Loading Screen
 const LoadingScreen = ({ progress }) => {
@@ -118,7 +119,9 @@ const Home = () => {
 
       <div
         className={`min-h-screen bg-background text-foreground ${
-          isLoading ? "opacity-0" : "opacity-100 transition-opacity duration-700"
+          isLoading
+            ? "opacity-0"
+            : "opacity-100 transition-opacity duration-700"
         }`}
       >
         <section id="hero" ref={sectionRefs.hero}>
@@ -136,6 +139,8 @@ const Home = () => {
         <section id="contact" ref={sectionRefs.contact}>
           <ContactSection />
         </section>
+
+        <ChatBot />
 
         <footer className="py-10 text-center text-base text-muted-foreground border-t border-border">
           <div className="container mx-auto px-4">
