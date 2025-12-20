@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import { sanitizeInput, validateChatMessage, isUrlSafe } from "../lib/security";
 import {
   X,
   MessageCircle,
@@ -633,10 +634,20 @@ const ChatBotIcon = () => {
 
   // ADDED MISSING FUNCTION
   const navigateToSection = useCallback((section: string) => {
-    const sectionId = section
+    // Sanitize section name to prevent injection attacks
+    const sanitized = sanitizeInput(section);
+    const sectionId = sanitized
       .toLowerCase()
       .replace("go to ", "")
-      .replace(" ", "-");
+      .replace(/ /g, "-")
+      .replace(/[^a-z0-9-]/g, ""); // Remove any non-alphanumeric characters except hyphens
+    
+    // Validate that the section ID is safe (only alphanumeric and hyphens)
+    if (!/^[a-z0-9-]+$/.test(sectionId)) {
+      console.warn("Blocked unsafe section ID:", sectionId);
+      return;
+    }
+    
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
@@ -647,10 +658,17 @@ const ChatBotIcon = () => {
   const handleSendMessage = useCallback(() => {
     if (!message.trim()) return;
 
+    // Validate and sanitize user input for security
+    const validation = validateChatMessage(message);
+    if (!validation.isValid) {
+      console.warn("Invalid message:", validation.error);
+      return;
+    }
+
     // Add user message
     const userMessage: ChatMessage = {
       id: chatMessages.length + 1,
-      text: message,
+      text: validation.sanitized, // Use sanitized input
       isBot: false,
       time: new Date().toLocaleTimeString([], {
         hour: "2-digit",
