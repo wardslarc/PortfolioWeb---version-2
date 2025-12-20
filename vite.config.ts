@@ -46,6 +46,11 @@ export default defineConfig({
     allowedHosts: true,
     middlewareMode: false,
     headers: {
+      // Security headers to prevent common attacks
+      'X-Content-Type-Options': 'nosniff', // Prevent MIME sniffing
+      'X-Frame-Options': 'DENY', // Prevent clickjacking
+      'X-XSS-Protection': '1; mode=block', // Enable XSS protection
+      'Referrer-Policy': 'strict-origin-when-cross-origin', // Control referrer info
       'Cache-Control': 'public, max-age=3600',
     },
   },
