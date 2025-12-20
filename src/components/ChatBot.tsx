@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import {
   X,
   MessageCircle,
@@ -63,6 +63,7 @@ const ChatBotIcon = () => {
   const [conversationContext, setConversationContext] = useState<string[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const responseCache = useRef<Map<string, any>>(new Map());
 
   // Enhanced AI responses with better keyword matching
   const aiResponseCategories: AIResponseCategory[] = [
@@ -420,11 +421,11 @@ const ChatBotIcon = () => {
     scrollToBottom();
   }, [chatMessages, isTyping]);
 
-  const scrollToBottom = () => {
+  const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  }, []);
 
-  const calculateMessageRelevance = (
+  const calculateMessageRelevance = useCallback((
     message: string,
     category: AIResponseCategory
   ): number => {
@@ -473,7 +474,7 @@ const ChatBotIcon = () => {
       (contextMatches / Math.max(conversationContext.length, 1)) * 0.1;
 
     return Math.min(relevance, 1);
-  };
+  }, [conversationContext]);
 
   const getAIResponse = (
     userMessage: string
@@ -484,6 +485,11 @@ const ChatBotIcon = () => {
     relatedSections?: string[];
   } => {
     const lowerMessage = userMessage.toLowerCase().trim();
+    
+    // Check cache first for performance
+    if (responseCache.current.has(lowerMessage)) {
+      return responseCache.current.get(lowerMessage);
+    }
 
     // First, check for simple greetings and common queries
     const simpleQueries: Record<string, string> = {
@@ -534,12 +540,14 @@ const ChatBotIcon = () => {
     });
 
     if (isOutOfScope) {
-      return {
+      const result = {
         response:
           "I'm focused on helping you explore Carl's portfolio. I can't provide information about that topic. Would you like to know about Carl's projects, skills, or artwork instead?",
         confidence: 0.1,
         isOutOfScope: true,
       };
+      responseCache.current.set(lowerMessage, result);
+      return result;
     }
 
     // Check for low confidence patterns
@@ -577,11 +585,13 @@ const ChatBotIcon = () => {
         0.4
       );
 
-      return {
+      const result = {
         response: randomResponse,
         confidence: confidence,
         relatedSections: bestMatch.category.relatedSections,
       };
+      responseCache.current.set(lowerMessage, result);
+      return result;
     } else if (needsClarification) {
       // Needs clarification response
       const clarificationResponses = [
@@ -590,7 +600,7 @@ const ChatBotIcon = () => {
         "I can help with questions about Carl's work. Could you be more specific about what you'd like to know?",
       ];
 
-      return {
+      const result = {
         response:
           clarificationResponses[
             Math.floor(Math.random() * clarificationResponses.length)
@@ -598,6 +608,8 @@ const ChatBotIcon = () => {
         confidence: 0.3,
         isOutOfScope: false,
       };
+      responseCache.current.set(lowerMessage, result);
+      return result;
     } else {
       // No good match found - use fallback
       const fallbackResponses = [
@@ -606,7 +618,7 @@ const ChatBotIcon = () => {
         "Feel free to ask about Carl's projects, technical skills, digital artwork, or contact information.",
       ];
 
-      return {
+      const result = {
         response:
           fallbackResponses[
             Math.floor(Math.random() * fallbackResponses.length)
@@ -614,11 +626,13 @@ const ChatBotIcon = () => {
         confidence: 0.2,
         isOutOfScope: false,
       };
+      responseCache.current.set(lowerMessage, result);
+      return result;
     }
   };
 
   // ADDED MISSING FUNCTION
-  const navigateToSection = (section: string) => {
+  const navigateToSection = useCallback((section: string) => {
     const sectionId = section
       .toLowerCase()
       .replace("go to ", "")
@@ -628,9 +642,9 @@ const ChatBotIcon = () => {
       element.scrollIntoView({ behavior: "smooth" });
       setIsOpen(false); // Close chat when navigating
     }
-  };
+  }, []);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = useCallback(() => {
     if (!message.trim()) return;
 
     // Add user message
@@ -706,24 +720,24 @@ const ChatBotIcon = () => {
 
       setIsTyping(false);
     }, delay);
-  };
+  }, [message, chatMessages, getAIResponse]);
 
-  const handleQuickReply = (text: string) => {
+  const handleQuickReply = useCallback((text: string) => {
     setMessage(text);
     // Auto-send after a short delay
     setTimeout(() => {
       handleSendMessage();
     }, 300);
-  };
+  }, [handleSendMessage]);
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleKeyPress = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
     }
-  };
+  }, [handleSendMessage]);
 
-  const handleReaction = (messageId: number, type: "like" | "dislike") => {
+  const handleReaction = useCallback((messageId: number, type: "like" | "dislike") => {
     setChatMessages((prev) =>
       prev.map((msg) => {
         if (msg.id === messageId && msg.reactions) {
@@ -739,9 +753,9 @@ const ChatBotIcon = () => {
         return msg;
       })
     );
-  };
+  }, []);
 
-  const exportChat = () => {
+  const exportChat = useCallback(() => {
     const chatText = chatMessages
       .map((msg) => `${msg.isBot ? "AI" : "You"}: ${msg.text} (${msg.time})`)
       .join("\n\n");
@@ -755,9 +769,9 @@ const ChatBotIcon = () => {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-  };
+  }, [chatMessages]);
 
-  const clearChat = () => {
+  const clearChat = useCallback(() => {
     setChatMessages([
       {
         id: 1,
@@ -789,7 +803,7 @@ const ChatBotIcon = () => {
       },
     ]);
     setConversationContext([]);
-  };
+  }, []);
 
   // Auto-resize textarea
   useEffect(() => {

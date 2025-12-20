@@ -7,33 +7,69 @@ import ArtSection from "./ArtSection";
 import ContactSection from "./ContactSection";
 import ChatBot from "./ChatBot";
 
-// Loading Screen
+// Loading Screen - Professional Design
 const LoadingScreen = ({ progress }) => {
   return (
-    <div className="fixed inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-gray-900 to-background z-50">
-      <div className="flex flex-col items-center justify-center p-10 rounded-3xl bg-background/80 backdrop-blur-md border border-border shadow-2xl">
-        <div className="mb-10 transform transition-transform duration-700 hover:scale-105">
-          <img
-            src="/cde.png"
-            alt="Carls Dale Escalo Logo"
-            className="w-40 h-40 object-contain mx-auto"
-          />
+    <div className="fixed inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-slate-950 to-black z-50 overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 opacity-20">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
+        <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
+        <div className="absolute bottom-1/4 right-1/3 w-96 h-96 bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000"></div>
+      </div>
+
+      {/* Content Container */}
+      <div className="relative z-10 flex flex-col items-center justify-center">
+        {/* Logo with rotation animation */}
+        <div className="mb-12 relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full blur-2xl opacity-50 animate-pulse"></div>
+          <div className="relative bg-slate-900 p-4 rounded-full border border-slate-700 backdrop-blur-xl">
+            <img
+              src="/cde.png"
+              alt="Carls Dale Escalo Logo"
+              className="w-32 h-32 object-contain animate-spin-slow"
+            />
+          </div>
         </div>
-        <h2 className="text-3xl font-extrabold text-foreground mb-6 flex items-center">
-          Loading
-          <span className="flex">
-            <span className="animate-pulse">.</span>
-            <span className="animate-pulse delay-200">.</span>
-            <span className="animate-pulse delay-400">.</span>
-          </span>
+
+        {/* Main text */}
+        <h2 className="text-4xl sm:text-5xl font-bold text-white mb-2 text-center font-serif">
+          Welcome
         </h2>
-        <div className="w-80 h-3 bg-border rounded-full overflow-hidden mb-3">
-          <div
-            className="h-full bg-gradient-to-r from-primary to-blue-600 transition-all duration-300 rounded-full"
-            style={{ width: `${progress}%` }}
-          ></div>
+        <p className="text-lg text-slate-300 mb-12 text-center max-w-md">
+          Crafting digital experiences with precision and innovation
+        </p>
+
+        {/* Progress Bar */}
+        <div className="w-72 space-y-4">
+          {/* Outer container with border */}
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full blur opacity-50"></div>
+            <div className="relative w-full h-2 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
+              <div
+                className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-indigo-500 transition-all duration-300 rounded-full shadow-lg"
+                style={{ width: `${progress}%` }}
+              >
+                <div className="absolute inset-0 bg-white opacity-20 animate-shimmer"></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Progress text */}
+          <div className="text-center">
+            <p className="text-3xl font-bold text-white font-mono">{progress}%</p>
+            <p className="text-sm text-slate-400 mt-1">
+              {progress < 25 ? "Initializing..." : progress < 50 ? "Loading resources..." : progress < 75 ? "Optimizing..." : "Almost there..."}
+            </p>
+          </div>
         </div>
-        <p className="text-muted-foreground text-base">{progress}%</p>
+
+        {/* Loading dots */}
+        <div className="flex gap-2 mt-10">
+          <div className="w-3 h-3 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: "0s" }}></div>
+          <div className="w-3 h-3 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
+          <div className="w-3 h-3 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: "0.4s" }}></div>
+        </div>
       </div>
     </div>
   );
