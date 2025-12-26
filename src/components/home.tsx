@@ -1,6 +1,7 @@
 // src/Home.jsx
 import React, { useState, useEffect, useRef } from "react";
 import HeroSection from "./HeroSection";
+import IntroSection from "./IntroSection";
 import ProjectsSection from "./ProjectsSection";
 import SkillsSection from "./SkillsSection";
 import ArtSection from "./ArtSection";
@@ -82,6 +83,7 @@ const Home = () => {
 
   const sectionRefs = {
     hero: useRef(null),
+    intro: useRef(null),
     projects: useRef(null),
     skills: useRef(null),
     art: useRef(null),
@@ -162,6 +164,9 @@ const Home = () => {
       >
         <section id="hero" ref={sectionRefs.hero}>
           <HeroSection />
+        </section>
+        <section id="about-me" ref={sectionRefs.intro}>
+          <IntroSection />
         </section>
         <section id="projects" ref={sectionRefs.projects}>
           <ProjectsSection />
