@@ -70,6 +70,39 @@ const ChatBotIcon = () => {
   const aiResponseCategories: AIResponseCategory[] = [
     {
       keywords: [
+        "about",
+        "who",
+        "background",
+        "person",
+        "introduction",
+        "tell me about",
+        "describe",
+        "who is",
+        "biography",
+        "bio",
+        "journey",
+      ],
+      responses: [
+        "Carl is a full-stack developer based in the Philippines with over 2 years of experience building high-performance web applications. Check the About Me section for his detailed story!",
+        "Learn more about Carl in the About Me section - he shares his journey, expertise in the MERN stack, and passion for creating elegant digital solutions.",
+        "Carl's background spans from internships at Business Machine Corporation to leading development at Citimax Group. The About Me section has all the details!",
+        "Discover Carl's professional journey and personal philosophy in the About Me section above.",
+      ],
+      context: [
+        "personality",
+        "introduction",
+        "bio",
+        "what",
+        "tell",
+        "describe",
+        "story",
+        "journey",
+      ],
+      confidence: 0.95,
+      relatedSections: ["About Me", "Skills", "Projects"],
+    },
+    {
+      keywords: [
         "project",
         "portfolio",
         "work",
@@ -333,10 +366,10 @@ const ChatBotIcon = () => {
         "can you help",
       ],
       responses: [
-        "I can help you with: • Information about Carl's projects • Details about his technical skills • Contact information • Artwork examples • Portfolio navigation",
-        "I'm here to assist you with: Exploring projects, understanding skills, viewing artwork, and connecting with Carl. What would you like to know?",
-        "I can provide information about all sections of this portfolio: Projects, Skills, Art, and Contact details. Just ask!",
-        "I can help you explore Carl's portfolio, discuss his projects and skills, view his artwork, or get contact information. What interests you?",
+        "I can help you with: • Information about Carl's background • Projects and portfolio • Technical skills • Artwork • Contact information",
+        "I'm here to assist you with: Exploring Carl's background, projects, skills, artwork, and contact details. What would you like to know?",
+        "I can provide information about: Carl's story and background, projects, skills, artwork, and how to get in touch.",
+        "I can help you explore Carl's entire portfolio: Background, projects, skills, creative work, and contact information. What interests you?",
       ],
       context: ["assistance", "help", "support", "guide", "what"],
       confidence: 1.0,
@@ -812,8 +845,8 @@ const ChatBotIcon = () => {
         }),
         isSuggestion: true,
         suggestions: [
-          "Tell me about projects",
-          "What are Carl's skills?",
+          "Tell me about you",
+          "What are Carl's projects?",
           "How to contact?",
           "Show art examples",
         ],
@@ -1106,6 +1139,13 @@ const ChatBotIcon = () => {
                   </p>
                   <div className="grid grid-cols-2 gap-2 max-w-sm mx-auto">
                     <button
+                      onClick={() => handleQuickReply("About")}
+                      className="px-4 py-2 text-sm bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg transition-all border border-blue-200 flex items-center justify-center"
+                    >
+                      <Book className="w-4 h-4 mr-2" />
+                      About
+                    </button>
+                    <button
                       onClick={() => handleQuickReply("Projects")}
                       className="px-4 py-2 text-sm bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg transition-all border border-blue-200 flex items-center justify-center"
                     >
@@ -1120,17 +1160,10 @@ const ChatBotIcon = () => {
                       Skills
                     </button>
                     <button
-                      onClick={() => handleQuickReply("Art")}
-                      className="px-4 py-2 text-sm bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg transition-all border border-blue-200 flex items-center justify-center"
-                    >
-                      <Palette className="w-4 h-4 mr-2" />
-                      Artwork
-                    </button>
-                    <button
                       onClick={() => handleQuickReply("Contact")}
                       className="px-4 py-2 text-sm bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg transition-all border border-blue-200 flex items-center justify-center"
                     >
-                      <Book className="w-4 h-4 mr-2" />
+                      <MessageCircle className="w-4 h-4 mr-2" />
                       Contact
                     </button>
                   </div>
