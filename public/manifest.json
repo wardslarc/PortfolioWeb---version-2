@@ -1,0 +1,33 @@
+{
+  "name": "Carls Dale Escalo - Full Stack Developer",
+  "short_name": "Carls Dale",
+  "description": "Professional portfolio of Carls Dale Escalo - Full Stack Developer specializing in MERN stack, React, TypeScript, and modern web technologies",
+  "start_url": "https://www.carlsdaleescalo.com/",
+  "scope": "https://www.carlsdaleescalo.com/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "/cde.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/cde.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["business", "technology"],
+  "screenshots": [
+    {
+      "src": "/portfolio.png",
+      "sizes": "540x720",
+      "type": "image/png"
+    }
+  ]
+}

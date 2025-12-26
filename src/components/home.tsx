@@ -7,6 +7,7 @@ import SkillsSection from "./SkillsSection";
 import ArtSection from "./ArtSection";
 import ContactSection from "./ContactSection";
 import ChatBot from "./ChatBot";
+import { injectSchemaMarkup, generatePersonSchema, generateWebsiteSchema } from "@/utils/seoUtils";
 
 // Loading Screen - Professional Design
 const LoadingScreen = ({ progress }) => {
@@ -92,6 +93,10 @@ const Home = () => {
 
   // Dynamic loading based on images
   useEffect(() => {
+    // Inject schema markup for SEO
+    injectSchemaMarkup(generatePersonSchema());
+    injectSchemaMarkup(generateWebsiteSchema());
+
     const images = Array.from(document.images);
     let loadedCount = 0;
 
