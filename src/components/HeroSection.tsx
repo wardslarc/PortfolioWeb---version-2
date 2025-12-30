@@ -127,16 +127,21 @@ const HeroSection = () => {
 
           <motion.h2
             variants={itemVariants}
-            className="mt-2 text-2xl font-medium text-sky-400"
+            className="mt-2 text-2xl font-medium text-white"
           >
-            Web Developer / Digital Artist
+            Full Stack Developer
           </motion.h2>
 
           <motion.p
             variants={itemVariants}
             className="mt-4 text-lg max-w-xl text-gray-300"
           >
-            I build modern, responsive web applications with React, TypeScript, and Tailwind CSS.
+            I build modern, responsive web applications using MERN stack.
+          </motion.p>
+          <motion.p
+          variants={itemVariants}
+          className = "mt-2 text-lg max-w-xl text-gray-300">
+           Based in Cavite, Philippines
           </motion.p>
         </motion.div>
 
