@@ -121,9 +121,9 @@ const CareerEducationSection = () => {
   return (
     <section className="min-h-screen bg-gray-50 py-20 px-4 text-gray-900">
       <motion.div
-        initial={{ opacity: 0, x: 100 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: 100 }}
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
         transition={{ duration: 0.8 }}
         viewport={{ once: false, margin: "-100px" }}
         className="w-full"

@@ -4,6 +4,20 @@ import { Card, CardContent } from "@/components/ui/card";
 
 const IntroSection = () => {
   const [isHovering, setIsHovering] = useState(false);
+  
+  // Calculate age automatically
+  const calculateAge = () => {
+    const birthDate = new Date(2000, 11, 29); // December 29, 2000
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
+  const age = calculateAge();
   const containerVariants = {
     hidden: { opacity: 0 },
     show: {
@@ -23,9 +37,9 @@ const IntroSection = () => {
   return (
     <section id="intro" className="py-16 bg-white dark:bg-slate-900">
       <motion.div
-        initial={{ opacity: 0, x: -100 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: -100 }}
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
         transition={{ duration: 0.8 }}
         viewport={{ once: false, margin: "-100px" }}
         className="w-full"
@@ -118,7 +132,10 @@ const IntroSection = () => {
                   Carls Dale Escalo
                 </h3>
                 <p className="text-xl text-slate-600 dark:text-slate-400 font-medium mb-2">
-                  Full-Stack Web Developer
+                  Full-Stack Web Developer • {age} years old
+                </p>
+                <p className="text-sm text-slate-500 dark:text-slate-500">
+                  Born: December 29, 2000
                 </p>
               </div>
 

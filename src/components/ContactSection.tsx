@@ -300,9 +300,9 @@ const ContactSection = () => {
   return (
     <section id="contact" className="relative overflow-hidden bg-gray-50 min-h-screen flex flex-col">
       <motion.div
-        initial={{ opacity: 0, x: -100 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: -100 }}
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
         transition={{ duration: 0.8 }}
         viewport={{ once: false, margin: "-100px" }}
         className="w-full relative z-10 flex-1 flex flex-col justify-center py-20"
