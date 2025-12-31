@@ -73,7 +73,7 @@ const CareerEducationSection = () => {
       period: "Oct 2023 - Nov 2025",
       location: "Taguig, Philippines",
       description: "Internal tools development, infrastructure management, and corporate web support",
-      logo: "/assets/citimax.png",
+      logo: "/citimax.png",
       previewImage: "/citimax.png",
       achievements: [
         "Spearheaded development of multiple internal web applications using React.js, TypeScript, and Firebase",
@@ -91,7 +91,7 @@ const CareerEducationSection = () => {
       period: "Mar 2023 - June 2023",
       location: "Taguig, Philippines",
       description: "Full-stack development with focus on user-centered design and security implementation",
-      logo: "/assets/bismac.png",
+      logo: "/bismac.png",
       previewImage: "/bismac.png",
       achievements: [
         "Developed a library seat status monitoring system that enabled real-time tracking, improving space utilization and user visibility",
@@ -111,8 +111,8 @@ const CareerEducationSection = () => {
       period: "May 2019 - Sept 2023",
       location: "Taguig, Philippines",
       description: "Focused on web development, software engineering, and social computing principles",
-      logo: "/assets/umaklogo.png",
-      previewImage: "/assets/umak.png",
+      logo: "/umaklogo.png",
+      previewImage: "/umak.png",
       website: "https://www.umak.edu.ph/",
       type: "education",
     },
@@ -363,7 +363,7 @@ const CareerEducationSection = () => {
                       </div>
                       <div className="w-full h-48 bg-gray-100 relative">
                         <img
-                          src={item.previewImage || "/assets/umak.png"}
+                          src={item.previewImage || "/umak.png"}
                           alt="Institution preview"
                           className="w-full h-full object-cover"
                         />
