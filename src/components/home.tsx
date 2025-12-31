@@ -1,7 +1,7 @@
-// src/Home.jsx
 import React, { useState, useEffect, useRef } from "react";
 import HeroSection from "./HeroSection";
 import IntroSection from "./IntroSection";
+import CareerEducationSection from "./CareerEducationSection";
 import ProjectsSection from "./ProjectsSection";
 import SkillsSection from "./SkillsSection";
 import ArtSection from "./ArtSection";
@@ -22,18 +22,6 @@ const LoadingScreen = ({ progress }) => {
 
       {/* Content Container */}
       <div className="relative z-10 flex flex-col items-center justify-center">
-        {/* Logo with rotation animation */}
-        <div className="mb-12 relative">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full blur-2xl opacity-50 animate-pulse"></div>
-          <div className="relative bg-slate-900 p-4 rounded-full border border-slate-700 backdrop-blur-xl">
-            <img
-              src="/cde.png"
-              alt="Carls Dale Escalo Logo"
-              className="w-32 h-32 object-contain animate-spin-slow"
-            />
-          </div>
-        </div>
-
         {/* Main text */}
         <h2 className="text-4xl sm:text-5xl font-bold text-white mb-2 text-center font-serif">
           Welcome
@@ -172,6 +160,9 @@ const Home = () => {
         </section>
         <section id="about-me" ref={sectionRefs.intro}>
           <IntroSection />
+        </section>
+        <section id="career-education">
+          <CareerEducationSection />
         </section>
         <section id="projects" ref={sectionRefs.projects}>
           <ProjectsSection />

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 import { Badge } from "./ui/badge";
@@ -127,8 +128,16 @@ const ArtSection = () => {
   };
 
   return (
-    <section id="art" className="py-20 bg-background">
-      <div className="container mx-auto px-4">
+    <section id="art" className="py-20 bg-white">
+      <motion.div
+        initial={{ opacity: 0, x: 100 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: 100 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: false, margin: "-100px" }}
+        className="w-full"
+      >
+        <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
@@ -183,25 +192,31 @@ const ArtSection = () => {
               </div>
 
               {/* Media */}
-              <div className="relative">
-                {artwork.imageUrl.endsWith(".mp4") ? (
-                  <video
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    className="w-full aspect-square object-cover rounded-lg"
-                  >
-                    <source src={artwork.imageUrl} type="video/mp4" />
-                    Your browser does not support the video tag.
-                  </video>
-                ) : (
-                  <img
-                    src={artwork.imageUrl}
-                    alt={artwork.title}
-                    className="w-full aspect-square object-cover rounded-lg"
-                  />
-                )}
+              <div className="relative overflow-hidden rounded-lg">
+                <motion.div
+                  whileHover={{ scale: 1.1 }}
+                  transition={{ duration: 0.3 }}
+                  className="w-full h-full"
+                >
+                  {artwork.imageUrl.endsWith(".mp4") ? (
+                    <video
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      className="w-full aspect-square object-cover"
+                    >
+                      <source src={artwork.imageUrl} type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
+                  ) : (
+                    <img
+                      src={artwork.imageUrl}
+                      alt={artwork.title}
+                      className="w-full aspect-square object-cover"
+                    />
+                  )}
+                </motion.div>
               </div>
 
               {/* Actions */}
@@ -263,7 +278,8 @@ const ArtSection = () => {
             </Link>
           </div>
         </div>
-      </div>
+        </div>
+      </motion.div>
     </section>
   );
 };

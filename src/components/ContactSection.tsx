@@ -298,7 +298,15 @@ const ContactSection = () => {
   const isRateLimited = timeLeft > 0 && submissionCount >= MAX_SUBMISSIONS;
 
   return (
-    <section id="contact" className="py-20 relative overflow-hidden">
+    <section id="contact" className="relative overflow-hidden bg-gray-50 min-h-screen flex flex-col">
+      <motion.div
+        initial={{ opacity: 0, x: -100 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -100 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: false, margin: "-100px" }}
+        className="w-full relative z-10 flex-1 flex flex-col justify-center py-20"
+      >
       {/* Optimized Background */}
       <div className="absolute inset-0 z-0">
         {!isMobile ? (
@@ -603,6 +611,7 @@ const ContactSection = () => {
           )}
         </div>
       </div>
+      </motion.div>
     </section>
   );
 };

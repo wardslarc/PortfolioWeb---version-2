@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowDown, Github, Linkedin, Twitter } from "lucide-react";
+import { ArrowDown, Github, Linkedin, Twitter, FileText } from "lucide-react";
 import { Button } from "./ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 import { Link } from "react-scroll";
 
 // Animation variants
@@ -118,30 +119,33 @@ const HeroSection = () => {
           animate="show"
           className="flex flex-col items-center"
         >
+          <motion.p
+            variants={itemVariants}
+            className="text-sm uppercase tracking-widest text-gray-400 cursor-pointer mb-8"
+            whileHover={{ opacity: [1, 0.5, 1, 0.5, 1] }}
+            transition={{ duration: 0.6 }}
+          >
+            Based in Philippines
+          </motion.p>
+
           <motion.h1
             variants={itemVariants}
-            className="text-5xl md:text-6xl font-bold text-white"
+            className="text-5xl md:text-7xl font-bold text-white cursor-pointer leading-tight"
+            whileHover={{ opacity: [1, 0.5, 1, 0.5, 1] }}
+            transition={{ duration: 0.6 }}
           >
-            Carls Dale Escalo
+          Where <span className="text-blue-400">Clean Code</span>
+            <br />
+            Meets Creative <span className="text-white">Execution</span>
           </motion.h1>
 
-          <motion.h2
-            variants={itemVariants}
-            className="mt-2 text-2xl font-medium text-white"
-          >
-            Full Stack Developer
-          </motion.h2>
-
           <motion.p
             variants={itemVariants}
-            className="mt-4 text-lg max-w-xl text-gray-300"
+            className="mt-8 text-lg max-w-2xl text-gray-300 cursor-pointer"
+            whileHover={{ opacity: [1, 0.5, 1, 0.5, 1] }}
+            transition={{ duration: 0.6 }}
           >
-            I build modern, responsive web applications using MERN stack.
-          </motion.p>
-          <motion.p
-          variants={itemVariants}
-          className = "mt-2 text-lg max-w-xl text-gray-300">
-           Based in Cavite, Philippines
+            Hi, I'm Carls Dale. I create intuitive, visually stunning and highly functional web applications.
           </motion.p>
         </motion.div>
 
@@ -152,42 +156,80 @@ const HeroSection = () => {
           animate={{ opacity: 1 }}
           transition={{ delay: 1.2 }}
         >
-          <a href="https://github.com/wardslarc" target="_blank" rel="noopener noreferrer">
-            <Github size={24} color="white" />
-          </a>
-          <a href="https://www.linkedin.com/in/carls-dale-escalo-797701366/" target="_blank" rel="noopener noreferrer">
-            <Linkedin size={24} color="white" />
-          </a>
-          <a href="https://x.com/daleonigiri" target="_blank" rel="noopener noreferrer">
-            <Twitter size={24} color="white" />
-          </a>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <a href="https://github.com/wardslarc" target="_blank" rel="noopener noreferrer" className="cursor-pointer">
+                  <Github size={24} color="white" />
+                </a>
+              </TooltipTrigger>
+              <TooltipContent>Check out my GitHub</TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <a href="https://www.linkedin.com/in/carls-dale-escalo-797701366/" target="_blank" rel="noopener noreferrer" className="cursor-pointer">
+                  <Linkedin size={24} color="white" />
+                </a>
+              </TooltipTrigger>
+              <TooltipContent>Connect on LinkedIn</TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <a href="https://x.com/daleonigiri" target="_blank" rel="noopener noreferrer" className="cursor-pointer">
+                  <Twitter size={24} color="white" />
+                </a>
+              </TooltipTrigger>
+              <TooltipContent>Follow me on X</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </motion.div>
 
-        {/* View My Work Button */}
+        {/* Action Buttons */}
         <motion.div
-          className="mt-10"
+          className="mt-10 flex gap-4 flex-wrap justify-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.5 }}
         >
-          <Link to="projects" smooth={true} duration={600}>
+          <Link to="intro" smooth={true} duration={600}>
             <Button
               className="
-                bg-white
-                text-slate-900
-                px-10 py-4
+                border border-white
+                text-white
+                bg-transparent
+                px-8 py-3
                 rounded-sm
-                font-bold
-                shadow-lg
-                hover:bg-gray-100
+                font-semibold
+                hover:bg-white/10
                 transition-all
                 flex items-center
               "
             >
-              View My Work
-              <ArrowDown size={18} className="ml-2 animate-bounce" />
+              About Me
+              <ArrowDown size={16} className="ml-2" />
             </Button>
           </Link>
+          
+          <a href="/Escalo-Carls_Resume.pdf" target="_blank" rel="noopener noreferrer">
+            <Button
+              className="
+                border border-white
+                text-white
+                bg-transparent
+                px-8 py-3
+                rounded-sm
+                font-semibold
+                hover:bg-white/10
+                transition-all
+                flex items-center
+              "
+            >
+              <FileText size={16} className="mr-2" />
+              Download CV
+            </Button>
+          </a>
         </motion.div>
       </div>
     </section>
