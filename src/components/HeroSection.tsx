@@ -131,7 +131,7 @@ const HeroSection = () => {
             whileHover={{ opacity: [1, 0.5, 1, 0.5, 1] }}
             transition={{ duration: 0.6 }}
           >
-            Based in Philippines
+            Based in Cavite, Philippines
           </motion.p>
 
           <motion.h1
