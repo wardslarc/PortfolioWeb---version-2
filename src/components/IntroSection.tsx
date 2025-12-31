@@ -134,9 +134,6 @@ const IntroSection = () => {
                 <p className="text-xl text-slate-600 dark:text-slate-400 font-medium mb-2">
                   Full-Stack Web Developer • {age} years old
                 </p>
-                <p className="text-sm text-slate-500 dark:text-slate-500">
-                  Born: December 29, 2000
-                </p>
               </div>
 
               {/* Bio */}
