@@ -123,7 +123,7 @@ const IntroSection = () => {
                   I specialize in the MERN stack (MongoDB, Express, React, Node) and TypeScript, with a keen interest in security and automation. Whether I'm spearheading internal apps at Citimax Group or building productivity tools like Reflective Pomodoro, my goal is always the same: to write clean, maintainable code that delivers real-world value.
                 </p>
                 <p className="text-lg text-slate-700 dark:text-slate-300 leading-relaxed">
-                  When I'm not debugging or configuring DNS settings, you can find me exploring UI/UX principles or refining my art gallery—I believe the best software is where logic meets aesthetic.
+                  When I'm not building software, you can find me refining my coding skills i like solving leetcode problems. I'm passionate about continuous learning and always eager to take on new challenges that push me to grow as a developer.
                 </p>
               </div>
 

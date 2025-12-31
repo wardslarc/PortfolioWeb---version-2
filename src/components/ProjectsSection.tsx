@@ -174,17 +174,17 @@ const defaultProjects: Project[] = [
     description: "A website where users is prompt to reflect after a pomodoro session.",
     image: "/pomodoro.png",
     category: "personal",
-    technologies: ["React Js", "Typescript", "MongoDB", "Express"],
+    technologies: ["MongoDB", "Express", "ReactJS", "NodeJS"],
     demoUrl: "https://www.reflectivepomodoro.com/",
   },
-    {
-    id: "8",
-    title: "Sticky White Board",
-    description: "A collaborative whiteboard tool using React and Firebase. Still under development.",
-    image: "/sticky.png",
+  {
+    id: "6",
+    title: "Personal Website Portfolio",
+    description: "Your own developer portfolio built with React and Tailwind.",
+    image: "/portfolio.png",
     category: "personal",
-    technologies: ["React Js", "Typescript", "Firebase", "Tailwind"],
-    demoUrl: "https://sticky-white-board.vercel.app/",
+    technologies: ["MongoDB", "Express", "ReactJS", "NodeJS"],
+    demoUrl: "https://carlsdaleescalo.com",
   },
   {
     id: "1",
@@ -194,6 +194,15 @@ const defaultProjects: Project[] = [
     category: "work",
     technologies: ["Go Daddy", "Html", "CSS", "Javascript"],
     demoUrl: "https://citimax.ph",
+  },
+  {
+    id: "9",
+    title: "Marci Metzger Homes Website",
+    description: "A website for a real estate agent.",
+    image: "/marci.png",
+    category: "personal",
+    technologies: ["Reactjs", "Typescript", "Vite", "Firebase"],
+    demoUrl: "https://marcimetzger-orcin.vercel.app/",
   },
   {
     id: "2",
@@ -232,23 +241,15 @@ const defaultProjects: Project[] = [
     demoUrl: "#",
   },
   {
-    id: "6",
-    title: "Personal Website Portfolio",
-    description: "Your own developer portfolio built with React and Tailwind.",
-    image: "/portfolio.png",
-    category: "personal",
-    technologies: ["Reactjs", "Typescript", "Vite", "Firebase"],
-    demoUrl: "https://carlsdaleescalo.com",
-  },
-    {
     id: "8",
-    title: "Marci Metzger Homes Website",
-    description: "A website for a real estate agent.",
-    image: "/marci.png",
+    title: "Sticky White Board",
+    description: "A collaborative whiteboard tool using React and Firebase. Still under development.",
+    image: "/sticky.png",
     category: "personal",
-    technologies: ["Reactjs", "Typescript", "Vite", "Firebase"],
-    demoUrl: "https://marcimetzger-orcin.vercel.app/",
+    technologies: ["React Js", "Typescript", "Firebase", "Tailwind"],
+    demoUrl: "https://sticky-white-board.vercel.app/",
   },
+
 ];
 
 export default ProjectsSection;
