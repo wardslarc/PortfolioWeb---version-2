@@ -119,7 +119,7 @@ const CareerEducationSection = () => {
   ];
 
   return (
-    <section className="min-h-screen bg-gray-50 py-20 px-4 text-gray-900">
+    <section className="bg-gray-50 py-16 px-4 text-gray-900">
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
@@ -135,14 +135,14 @@ const CareerEducationSection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-12"
         >
           <motion.h2
             variants={sectionTitleVariants}
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, margin: "-100px" }}
-            className="text-4xl md:text-5xl font-bold mb-4 text-gray-900"
+            className="text-3xl md:text-4xl font-bold mb-4 text-gray-900"
           >
             Career & Education
           </motion.h2>
@@ -158,7 +158,7 @@ const CareerEducationSection = () => {
           </motion.p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-12">
+        <div className="grid md:grid-cols-2 gap-8">
           {/* Career Section */}
           <motion.div
             variants={columnVariants}
@@ -172,7 +172,7 @@ const CareerEducationSection = () => {
               initial="hidden"
               whileInView="show"
               viewport={{ once: true, margin: "-100px" }}
-              className="space-y-6 overflow-visible"
+              className="space-y-4 overflow-visible"
             >
               <div className="flex items-center gap-2 mb-8">
                 <Briefcase size={32} className="text-blue-500" />
@@ -185,7 +185,7 @@ const CareerEducationSection = () => {
                   ref={(el) => {careerRefs.current[index] = el}}
                   variants={cardVariants}
                   whileHover="hover"
-                  className="relative overflow-visible bg-white rounded-lg p-6 border-2 border-gray-300 hover:border-blue-500 transition-all shadow-md cursor-pointer"
+                  className="relative overflow-visible bg-white rounded-lg p-5 border-2 border-gray-300 hover:border-blue-500 transition-all shadow-md cursor-pointer"
                   onMouseEnter={() => setHoveredWebsite(item.website)}
                   onMouseLeave={() => setHoveredWebsite(null)}
                 >
@@ -195,7 +195,7 @@ const CareerEducationSection = () => {
                         <img
                           src={item.logo}
                           alt={item.company}
-                          className="w-12 h-12 rounded-lg object-cover border border-gray-200"
+                          className="w-10 h-10 rounded-lg object-cover border border-gray-200"
                         />
                       )}
                       <div>
@@ -297,7 +297,7 @@ const CareerEducationSection = () => {
               initial="hidden"
               whileInView="show"
               viewport={{ once: true, margin: "-100px" }}
-              className="space-y-6 overflow-visible"
+              className="space-y-4 overflow-visible"
             >
               <div className="flex items-center gap-2 mb-8">
                 <GraduationCap size={32} className="text-purple-500" />
@@ -310,7 +310,7 @@ const CareerEducationSection = () => {
                   ref={(el) => {educationRefs.current[index] = el}}
                   variants={cardVariants}
                   whileHover="hover"
-                  className="relative overflow-visible bg-white rounded-lg p-6 border-2 border-gray-300 hover:border-purple-500 transition-all shadow-md cursor-pointer"
+                  className="relative overflow-visible bg-white rounded-lg p-5 border-2 border-gray-300 hover:border-purple-500 transition-all shadow-md cursor-pointer"
                   onMouseEnter={() => setHoveredWebsite(item.website)}
                   onMouseLeave={() => setHoveredWebsite(null)}
                 >
@@ -320,7 +320,7 @@ const CareerEducationSection = () => {
                         <img
                           src={item.logo}
                           alt={item.institution}
-                          className="w-12 h-12 rounded-lg object-cover border border-gray-200"
+                          className="w-10 h-10 rounded-lg object-cover border border-gray-200"
                         />
                       )}
                       <div>
