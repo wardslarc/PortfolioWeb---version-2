@@ -62,8 +62,16 @@ const ProjectsSection = ({ projects = defaultProjects }: ProjectsSectionProps) =
   };
 
   return (
-    <section id="projects" className="py-20 bg-background">
-      <div className="container mx-auto px-4">
+    <section id="projects" className="py-20 bg-white">
+      <motion.div
+        initial={{ opacity: 0, x: 100 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: 100 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: false, margin: "-100px" }}
+        className="w-full"
+      >
+        <div className="container mx-auto px-4">
         <div className="text-center mb-12 px-2">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">My Web Development Projects</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto text-sm sm:text-base">
@@ -162,7 +170,8 @@ const ProjectsSection = ({ projects = defaultProjects }: ProjectsSectionProps) =
         {selectedProject && (
           <ProjectModal project={selectedProject} isOpen={isModalOpen} onClose={closeProjectModal} />
         )}
-      </div>
+        </div>
+      </motion.div>
     </section>
   );
 };

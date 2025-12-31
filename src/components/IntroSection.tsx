@@ -21,8 +21,16 @@ const IntroSection = () => {
   };
 
   return (
-    <section id="intro" className="py-24 bg-slate-50 dark:bg-slate-900">
-      <div className="container mx-auto px-4">
+    <section id="intro" className="py-16 bg-white dark:bg-slate-900">
+      <motion.div
+        initial={{ opacity: 0, x: -100 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -100 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: false, margin: "-100px" }}
+        className="w-full"
+      >
+        <div className="container mx-auto px-4">
         <motion.div
           initial="hidden"
           whileInView="show"
@@ -33,9 +41,9 @@ const IntroSection = () => {
           {/* Section Header */}
           <motion.div
             variants={itemVariants}
-            className="text-center mb-16"
+            className="text-center mb-12"
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-3 text-slate-900 dark:text-white">
+            <h2 className="text-3xl md:text-4xl font-bold mb-3 text-slate-900 dark:text-white">
               About Me
             </h2>
             <p className="text-lg text-slate-600 dark:text-slate-400">
@@ -44,13 +52,13 @@ const IntroSection = () => {
           </motion.div>
 
           {/* Main Content Grid - Full Featured Layout */}
-          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          <div className="grid lg:grid-cols-12 gap-6 lg:gap-8 items-center">
             {/* Photo Section - Featured Left */}
             <motion.div
               variants={itemVariants}
               className="lg:col-span-5 flex justify-center"
             >
-              <div className="relative w-full max-w-sm">
+              <div className="relative w-full max-w-xs">
                 {/* Gradient background accent - top right */}
                 <div className="absolute -top-8 -right-8 w-48 h-48 bg-gradient-to-br from-yellow-500/40 to-orange-600/40 rounded-3xl blur-3xl"></div>
                 
@@ -63,7 +71,7 @@ const IntroSection = () => {
                   transition={{ duration: 0.3 }}
                   onMouseEnter={() => setIsHovering(true)}
                   onMouseLeave={() => setIsHovering(false)}
-                  className="relative aspect-[3/4] rounded-3xl overflow-hidden shadow-2xl hover:shadow-3xl transition-shadow duration-300 bg-slate-300 dark:bg-slate-700 border-8 border-white dark:border-slate-800"
+                  className="relative aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl hover:shadow-3xl transition-shadow duration-300 bg-slate-300 dark:bg-slate-700 border-4 border-white dark:border-slate-800"
                 >
                   {/* Photo with transition */}
                   <div className="relative w-full h-full">
@@ -102,11 +110,11 @@ const IntroSection = () => {
             {/* Content Section - Right */}
             <motion.div
               variants={itemVariants}
-              className="lg:col-span-7 space-y-6 pt-4"
+              className="lg:col-span-7 space-y-4 pt-4"
             >
               {/* Greeting */}
               <div>
-                <h3 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
+                <h3 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">
                   Carls Dale Escalo
                 </h3>
                 <p className="text-xl text-slate-600 dark:text-slate-400 font-medium mb-2">
@@ -115,17 +123,17 @@ const IntroSection = () => {
               </div>
 
               {/* Bio */}
-              <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-700">
-                <p className="text-lg text-slate-700 dark:text-slate-300 leading-relaxed">
+              <div className="space-y-3 pt-4 border-t border-slate-200 dark:border-slate-700">
+                <p className="text-base text-slate-700 dark:text-slate-300 leading-relaxed">
                   I'm Carls Dale Escalo, a Full-Stack Web Developer based in the Philippines with over 2 years of experience turning complex problems into streamlined digital experiences. My journey started during a formative internship at Business Machine Corporation and has since evolved into a career focused on building high-performance internal tools and corporate web infrastructures.
                 </p>
-                <p className="text-lg text-slate-700 dark:text-slate-300 leading-relaxed">
+                <p className="text-base text-slate-700 dark:text-slate-300 leading-relaxed">
                   I specialize in the MERN stack (MongoDB, Express, React, Node) and TypeScript, with a keen interest in security and automation. Whether I'm spearheading internal apps at Citimax Group or building productivity tools like Reflective Pomodoro, my goal is always the same: to write clean, maintainable code that delivers real-world value.
                 </p>
-                <p className="text-lg text-slate-700 dark:text-slate-300 leading-relaxed">
+                <p className="text-base text-slate-700 dark:text-slate-300 leading-relaxed">
                   When I'm not building software, you can find me refining my coding skills i like solving leetcode problems. I'm passionate about continuous learning and always eager to take on new challenges that push me to grow as a developer.
                 </p>
-              </div>
+              </div>  
 
               {/* Stats Row */}
               <div className="grid grid-cols-2 gap-4 pt-4">
@@ -165,7 +173,8 @@ const IntroSection = () => {
             </motion.div>
           </div>
         </motion.div>
-      </div>
+        </div>
+      </motion.div>
     </section>
   );
 };

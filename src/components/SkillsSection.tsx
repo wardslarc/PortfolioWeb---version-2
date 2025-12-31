@@ -25,8 +25,16 @@ const SkillsSection = ({
   const displayedSkills = showAll ? skills : skills.slice(0, 6);
 
   return (
-    <section id="skills" className="py-20 bg-slate-50 dark:bg-slate-900">
-      <div className="container mx-auto px-4">
+    <section id="skills" className="py-20 bg-gray-50 dark:bg-slate-900">
+      <motion.div
+        initial={{ opacity: 0, x: -100 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -100 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: false, margin: "-100px" }}
+        className="w-full"
+      >
+        <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -76,7 +84,8 @@ const SkillsSection = ({
             </Button>
           </motion.div>
         )}
-      </div>
+        </div>
+      </motion.div>
     </section>
   );
 };
