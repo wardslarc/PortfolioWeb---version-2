@@ -4,6 +4,7 @@ import { ArrowDown, Github, Linkedin, Twitter, FileText } from "lucide-react";
 import { Button } from "./ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 import { Link } from "react-scroll";
+import { useTheme } from "../context/ThemeContext";
 
 // Animation variants
 const containerVariants = {
@@ -23,8 +24,26 @@ const itemVariants = {
 };
 
 const HeroSection = () => {
+  const { manualTimePeriod } = useTheme();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
+
+  // Determine time period
+  const getTimePeriod = () => {
+    if (manualTimePeriod) return manualTimePeriod;
+    const hour = new Date().getHours();
+    if (hour >= 5 && hour < 12) return "morning";
+    if (hour >= 12 && hour < 18) return "afternoon";
+    return "night";
+  };
+
+  // Determine background image based on time of day
+  const getBackgroundImage = () => {
+    const period = getTimePeriod();
+    if (period === "morning") return "url('/morning.png')";
+    if (period === "afternoon") return "url('/afternoon.png')";
+    return "url('/night.png')";
+  };
 
   const handleMouseMove = (e: React.MouseEvent) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -44,22 +63,7 @@ const HeroSection = () => {
       {/* Background Image */}
       <div
         className="absolute inset-0 z-0 bg-center bg-cover"
-        style={{ backgroundImage: "url('/nightly.jpg')" }}
-      />
-
-      {/* Dark gradient with cursor spotlight */}
-      <div
-        className="absolute inset-0 z-10 bg-gradient-to-br from-slate-900 to-slate-800 pointer-events-none"
-        style={{
-          WebkitMaskImage: isHovering
-            ? `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, transparent 120px, rgba(0,0,0,0.95) 200px)`
-            : 'none',
-          maskImage: isHovering
-            ? `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, transparent 120px, rgba(0,0,0,0.95) 200px)`
-            : 'none',
-          maskRepeat: 'no-repeat',
-          WebkitMaskRepeat: 'no-repeat',
-        }}
+        style={{ backgroundImage: getBackgroundImage() }}
       />
 
       {/* Rain effect */}
@@ -83,8 +87,8 @@ const HeroSection = () => {
         ))}
       </div>
 
-      {/* Cursor glow */}
-      {isHovering && (
+      {/* Cursor glow - hidden for morning and afternoon */}
+      {getTimePeriod() === "night" && isHovering && (
         <motion.div
           className="absolute z-30 pointer-events-none"
           style={{
@@ -121,7 +125,9 @@ const HeroSection = () => {
         >
           <motion.p
             variants={itemVariants}
-            className="text-sm uppercase tracking-widest text-gray-400 cursor-pointer mb-8"
+            className={`text-base uppercase tracking-widest cursor-pointer mb-8 ${
+              getTimePeriod() === "morning" ? "text-black" : getTimePeriod() === "afternoon" ? "text-gray-800" : "text-gray-400"
+            }`}
             whileHover={{ opacity: [1, 0.5, 1, 0.5, 1] }}
             transition={{ duration: 0.6 }}
           >
@@ -130,18 +136,30 @@ const HeroSection = () => {
 
           <motion.h1
             variants={itemVariants}
-            className="text-5xl md:text-7xl font-bold text-white cursor-pointer leading-tight"
+            className={`text-6xl md:text-8xl font-bold cursor-pointer leading-tight ${
+              getTimePeriod() === "morning" ? "text-white" : "text-white"
+            }`}
+            style={{
+              fontFamily: "'Lora', serif",
+              fontSize: "clamp(3rem, 10vw, 7rem)",
+              background: "linear-gradient(135deg, #5b21b6 0%, #3b82f6 50%, #1e40af 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+              filter: "drop-shadow(0 0 20px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 40px rgba(255, 255, 255, 0.6)) drop-shadow(0 0 60px rgba(255, 255, 255, 0.4))"
+            }}
             whileHover={{ opacity: [1, 0.5, 1, 0.5, 1] }}
             transition={{ duration: 0.6 }}
           >
-          Where <span className="text-blue-400">Clean Code</span>
+          Where <span style={{ fontFamily: "'Lora', serif" }}>Clean Code</span>
             <br />
-            Meets Creative <span className="text-white">Execution</span>
+            Meets Creative <span style={{ fontFamily: "'Lora', serif", background: "linear-gradient(135deg, #1e40af 0%, #0891b2 50%, #0369a1 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>Execution</span>
           </motion.h1>
 
           <motion.p
             variants={itemVariants}
-            className="mt-8 text-lg max-w-2xl text-gray-300 cursor-pointer"
+            className="mt-8 text-xl max-w-2xl cursor-pointer"
+            style={{ color: getTimePeriod() === "night" ? "white" : "#181818" }}
             whileHover={{ opacity: [1, 0.5, 1, 0.5, 1] }}
             transition={{ duration: 0.6 }}
           >
@@ -195,17 +213,12 @@ const HeroSection = () => {
         >
           <Link to="intro" smooth={true} duration={600}>
             <Button
-              className="
-                border border-white
-                text-white
-                bg-transparent
-                px-8 py-3
-                rounded-sm
-                font-semibold
-                hover:bg-white/10
-                transition-all
-                flex items-center
-              "
+              className="px-8 py-3 rounded-sm font-semibold transition-all flex items-center hover:opacity-80"
+              style={{
+                background: "linear-gradient(135deg, #5b21b6 0%, #3b82f6 50%, #1e40af 100%)",
+                color: "white",
+                border: "none"
+              }}
             >
               About Me
               <ArrowDown size={16} className="ml-2" />
@@ -214,17 +227,12 @@ const HeroSection = () => {
           
           <a href="/Escalo-Carls_Resume.pdf" target="_blank" rel="noopener noreferrer">
             <Button
-              className="
-                border border-white
-                text-white
-                bg-transparent
-                px-8 py-3
-                rounded-sm
-                font-semibold
-                hover:bg-white/10
-                transition-all
-                flex items-center
-              "
+              className="px-8 py-3 rounded-sm font-semibold transition-all flex items-center hover:opacity-80"
+              style={{
+                background: "linear-gradient(135deg, #5b21b6 0%, #3b82f6 50%, #1e40af 100%)",
+                color: "white",
+                border: "none"
+              }}
             >
               <FileText size={16} className="mr-2" />
               Download CV

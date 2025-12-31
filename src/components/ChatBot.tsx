@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { sanitizeInput, validateChatMessage, isUrlSafe } from "../lib/security";
+import { useTheme } from "../context/ThemeContext";
 import {
   X,
   MessageCircle,
@@ -55,7 +56,9 @@ interface AIResponseCategory {
 }
 
 const ChatBotIcon = () => {
+  const { manualTimePeriod, setManualTimePeriod } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
   const [message, setMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
@@ -869,17 +872,86 @@ const ChatBotIcon = () => {
 
   return (
     <>
-      {/* Floating Chat Icon */}
-      <button
-        onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-40 w-14 h-14 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110 group"
-        aria-label="Open chat assistant"
-      >
-        <div className="relative">
-          <MessageCircle className="w-6 h-6 text-white" />
-          <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-        </div>
-      </button>
+      {/* Options Menu Button */}
+      <div className="fixed bottom-6 right-6 z-40">
+        <button
+          onClick={() => setShowMenu(!showMenu)}
+          className="w-14 h-14 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110 group"
+          aria-label="Open options menu"
+        >
+          <div className="relative">
+            <Sparkles className="w-6 h-6 text-white" />
+            <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+          </div>
+        </button>
+
+        {/* Dropdown Menu */}
+        {showMenu && (
+          <div className="absolute bottom-20 right-0 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden animate-in slide-in-from-bottom-2 duration-200">
+            <div className="p-2 space-y-1">
+              {/* Smart Assistant Option */}
+              <button
+                onClick={() => {
+                  setIsOpen(true);
+                  setShowMenu(false);
+                }}
+                className="w-full px-4 py-2 text-left hover:bg-blue-50 rounded transition-colors flex items-center space-x-2 text-sm"
+              >
+                <MessageCircle className="w-4 h-4 text-blue-500" />
+                <span className="text-gray-700 font-medium">Chat with Assistant</span>
+              </button>
+
+              {/* Theme Options Submenu */}
+              <div className="border-t border-gray-200 pt-2">
+                <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                  Change Theme
+                </div>
+                <button
+                  onClick={() => setManualTimePeriod(manualTimePeriod === "morning" ? null : "morning")}
+                  className={`w-full px-4 py-2 text-left rounded transition-colors flex items-center space-x-2 text-sm ${
+                    manualTimePeriod === "morning"
+                      ? "bg-yellow-100 text-yellow-700"
+                      : "hover:bg-gray-50 text-gray-700"
+                  }`}
+                >
+                  <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
+                  <span>Morning</span>
+                </button>
+                <button
+                  onClick={() => setManualTimePeriod(manualTimePeriod === "afternoon" ? null : "afternoon")}
+                  className={`w-full px-4 py-2 text-left rounded transition-colors flex items-center space-x-2 text-sm ${
+                    manualTimePeriod === "afternoon"
+                      ? "bg-orange-100 text-orange-700"
+                      : "hover:bg-gray-50 text-gray-700"
+                  }`}
+                >
+                  <div className="w-3 h-3 rounded-full bg-orange-400"></div>
+                  <span>Afternoon</span>
+                </button>
+                <button
+                  onClick={() => setManualTimePeriod(manualTimePeriod === "night" ? null : "night")}
+                  className={`w-full px-4 py-2 text-left rounded transition-colors flex items-center space-x-2 text-sm ${
+                    manualTimePeriod === "night"
+                      ? "bg-blue-900 text-blue-100"
+                      : "hover:bg-gray-50 text-gray-700"
+                  }`}
+                >
+                  <div className="w-3 h-3 rounded-full bg-blue-600"></div>
+                  <span>Night</span>
+                </button>
+                {manualTimePeriod && (
+                  <button
+                    onClick={() => setManualTimePeriod(null)}
+                    className="w-full px-4 py-2 text-left hover:bg-gray-50 rounded transition-colors text-xs text-gray-500 italic"
+                  >
+                    Reset to Auto
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
 
       {/* Chat Window */}
       {isOpen && (
