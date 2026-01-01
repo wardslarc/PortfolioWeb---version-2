@@ -876,12 +876,18 @@ const ChatBotIcon = () => {
       <div className="fixed bottom-6 right-6 z-40">
         <button
           onClick={() => setShowMenu(!showMenu)}
-          className="w-14 h-14 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110 group"
+          className="w-14 h-14 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110 group relative"
           aria-label="Open options menu"
         >
           <div className="relative">
             <Sparkles className="w-6 h-6 text-white" />
             <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+          </div>
+          
+          {/* Floating Message Tooltip */}
+          <div className="absolute bottom-20 right-0 bg-gray-900 text-white text-sm px-3 py-2 rounded-lg shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+            Click to change theme
+            <div className="absolute bottom-0 right-4 w-2 h-2 bg-gray-900 transform rotate-45 translate-y-1"></div>
           </div>
         </button>
 

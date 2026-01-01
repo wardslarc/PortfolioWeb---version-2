@@ -1,9 +1,28 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
+import { useTheme } from "@/context/ThemeContext";
 
 const IntroSection = () => {
   const [isHovering, setIsHovering] = useState(false);
+  const { manualTimePeriod } = useTheme();
+
+  // Determine time period
+  const getTimePeriod = () => {
+    if (manualTimePeriod) return manualTimePeriod;
+    const hour = new Date().getHours();
+    if (hour >= 5 && hour < 12) return "morning";
+    if (hour >= 12 && hour < 18) return "afternoon";
+    return "night";
+  };
+
+  // Get greeting based on time
+  const getGreeting = () => {
+    const period = getTimePeriod();
+    if (period === "morning") return "Good Morning! ";
+    if (period === "afternoon") return "Good Afternoon! ";
+    return "Good Evening! ";
+  };
   
   // Calculate age automatically
   const calculateAge = () => {
@@ -35,7 +54,7 @@ const IntroSection = () => {
   };
 
   return (
-    <section id="intro" className="py-16 bg-white dark:bg-slate-900">
+    <section id="intro" className="py-12 bg-white dark:bg-slate-900">
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
@@ -55,9 +74,9 @@ const IntroSection = () => {
           {/* Section Header */}
           <motion.div
             variants={itemVariants}
-            className="text-center mb-12"
+            className="text-center mb-8"
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-3 text-slate-900 dark:text-white">
+            <h2 className="text-3xl md:text-4xl font-bold mb-2 text-slate-900 dark:text-white">
               About Me
             </h2>
             <p className="text-lg text-slate-600 dark:text-slate-400">
@@ -124,11 +143,11 @@ const IntroSection = () => {
             {/* Content Section - Right */}
             <motion.div
               variants={itemVariants}
-              className="lg:col-span-7 space-y-4 pt-4"
+              className="lg:col-span-7 space-y-3 pt-4"
             >
               {/* Greeting */}
               <div>
-                <h3 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">
+                <h3 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-2">
                   Carls Dale Escalo
                 </h3>
                 <p className="text-xl text-slate-600 dark:text-slate-400 font-medium mb-2">
@@ -137,15 +156,12 @@ const IntroSection = () => {
               </div>
 
               {/* Bio */}
-              <div className="space-y-3 pt-4 border-t border-slate-200 dark:border-slate-700">
+              <div className="space-y-2 pt-4 border-t border-slate-200 dark:border-slate-700">
                 <p className="text-base text-slate-700 dark:text-slate-300 leading-relaxed">
-                  I'm Carls Dale Escalo, a Full-Stack Web Developer based in the Philippines with over 2 years of experience turning complex problems into streamlined digital experiences. My journey started during a formative internship at Business Machine Corporation and has since evolved into a career focused on building high-performance internal tools and corporate web infrastructures.
+                  <span className="font-semibold text-slate-900 dark:text-white">{getGreeting()}</span>I'm a Full-Stack Web Developer from the Philippines with 2+ years of experience building high-performance web applications. I specialize in the MERN stack and TypeScript, with a focus on security, clean code, and user experience.
                 </p>
                 <p className="text-base text-slate-700 dark:text-slate-300 leading-relaxed">
-                  I specialize in the MERN stack (MongoDB, Express, React, Node) and TypeScript, with a keen interest in security and automation. Whether I'm spearheading internal apps at Citimax Group or building productivity tools like Reflective Pomodoro, my goal is always the same: to write clean, maintainable code that delivers real-world value.
-                </p>
-                <p className="text-base text-slate-700 dark:text-slate-300 leading-relaxed">
-                  When I'm not building software, you can find me refining my coding skills i like solving leetcode problems. I'm passionate about continuous learning and always eager to take on new challenges that push me to grow as a developer.
+                  I love creating unique features. This portfolio features a dynamic time-aware theme that detects your local time and changes the background accordingly—try clicking the <span className="font-semibold text-slate-900 dark:text-white">sparkles button (✨)</span> to test it. Outside of coding, I solve LeetCode problems and love tackling new challenges.
                 </p>
               </div>  
 

@@ -66,88 +66,10 @@ const LoadingScreen = ({ progress }) => {
   );
 };
 
-// Feature Info Modal
-const FeatureInfoModal = ({ isOpen, onClose }) => {
-  if (!isOpen) return null;
-
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-2xl max-w-2xl w-full animate-in fade-in zoom-in duration-300 max-h-[90vh] overflow-y-auto">
-        <div className="p-8">
-          <div className="flex items-center gap-3 mb-6">
-            <span className="text-3xl">✨</span>
-            <h2 className="text-3xl font-bold text-gray-900">Dynamic Theme Feature</h2>
-          </div>
-          
-          <div className="space-y-6">
-            {/* Automatic Feature */}
-            <div className="border-l-4 border-blue-600 pl-4">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Automatic Time-Based Detection</h3>
-              <p className="text-gray-700 text-sm leading-relaxed mb-3">
-                The portfolio implements a dynamic theming system that automatically detects your local time and applies contextual backgrounds. This provides an immersive, time-responsive experience without any manual configuration required.
-              </p>
-              <div className="bg-gray-50 rounded p-3 text-sm text-gray-700 space-y-2">
-                <div className="flex items-start gap-2">
-                  <span className="text-lg">🌄</span>
-                  <div>
-                    <strong className="block">Morning</strong>
-                    <span className="text-gray-600">5:00 AM – 11:59 AM</span>
-                  </div>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-lg">☀️</span>
-                  <div>
-                    <strong className="block">Afternoon</strong>
-                    <span className="text-gray-600">12:00 PM – 5:59 PM</span>
-                  </div>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-lg">🌙</span>
-                  <div>
-                    <strong className="block">Night</strong>
-                    <span className="text-gray-600">6:00 PM – 4:59 AM</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Manual Override Feature */}
-            <div className="border-l-4 border-purple-600 pl-4">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Manual Theme Override</h3>
-              <p className="text-gray-700 text-sm leading-relaxed mb-3">
-                For testing and demonstration purposes, you can manually override the automatic detection. This allows you to preview how the portfolio appears at different times of day, regardless of your actual local time.
-              </p>
-              <div className="bg-gray-50 rounded p-3">
-                <p className="text-sm text-gray-700 mb-3">
-                  <strong>How to use:</strong>
-                </p>
-                <ol className="text-sm text-gray-700 space-y-2 ml-4 list-decimal">
-                  <li>Click the <strong>Sparkles (✨) button</strong> in the bottom-right corner</li>
-                  <li>Select your desired theme: <strong>Morning</strong>, <strong>Afternoon</strong>, or <strong>Night</strong></li>
-                  <li>The background changes instantly for preview</li>
-                  <li>Click <strong>"Reset to Auto"</strong> to return to automatic time-based detection</li>
-                </ol>
-              </div>
-            </div>
-          </div>
-
-          <button
-            onClick={onClose}
-            className="w-full mt-8 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200"
-          >
-            Got it!
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 // Home Page
 const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [progress, setProgress] = useState(0);
-  const [showFeatureModal, setShowFeatureModal] = useState(false);
 
   const sectionRefs = {
     hero: useRef(null),
@@ -171,7 +93,6 @@ const Home = () => {
       setProgress(100);
       setTimeout(() => {
         setIsLoading(false);
-        setShowFeatureModal(true);
       }, 100);
       return;
     }
@@ -182,7 +103,6 @@ const Home = () => {
       if (loadedCount === images.length) {
         setTimeout(() => {
           setIsLoading(false);
-          setShowFeatureModal(true);
         }, 200);
       }
     };
@@ -232,7 +152,6 @@ const Home = () => {
   return (
     <>
       {isLoading && <LoadingScreen progress={progress} />}
-      <FeatureInfoModal isOpen={showFeatureModal} onClose={() => setShowFeatureModal(false)} />
 
       <ThemeProvider>
         <div

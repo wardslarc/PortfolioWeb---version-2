@@ -97,10 +97,10 @@ const HeroSection = () => {
             width: 300,
             height: 300,
             background:
-              "radial-gradient(circle, rgba(251,186,60,0.35) 0%, rgba(251,186,60,0.15) 40%, transparent 70%)",
+              "radial-gradient(circle, rgba(251,186,60,0.2) 0%, rgba(251,186,60,0.08) 40%, transparent 70%)",
             borderRadius: "50%",
             mixBlendMode: "screen",
-            filter: "blur(25px)",
+            filter: "blur(20px)",
           }}
           animate={{
             opacity: [0.9, 0.4, 0.7, 1, 0.3, 0.85, 0.6, 0.95],
@@ -136,12 +136,12 @@ const HeroSection = () => {
 
           <motion.h1
             variants={itemVariants}
-            className={`text-6xl md:text-8xl font-bold cursor-pointer leading-tight ${
+            className={`text-4xl md:text-6xl font-bold cursor-pointer leading-tight ${
               getTimePeriod() === "morning" ? "text-white" : "text-white"
             }`}
             style={{
               fontFamily: "'Lora', serif",
-              fontSize: "clamp(3rem, 10vw, 7rem)",
+              fontSize: "clamp(2rem, 8vw, 5rem)",
               background: "linear-gradient(135deg, #5b21b6 0%, #3b82f6 50%, #1e40af 100%)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
