@@ -91,9 +91,11 @@ const Home = () => {
     injectSchemaMarkup(generateWebsiteSchema());
 
     const images = Array.from(document.images);
+    // Filter out lazy-loaded images that won't load during initial page load
+    const eagerImages = images.filter(img => img.loading !== 'lazy');
     let loadedCount = 0;
 
-    if (images.length === 0) {
+    if (eagerImages.length === 0) {
       setProgress(100);
       setTimeout(() => {
         setIsLoading(false);
@@ -103,15 +105,23 @@ const Home = () => {
 
     const onImageLoad = () => {
       loadedCount++;
-      setProgress(Math.floor((loadedCount / images.length) * 100));
-      if (loadedCount === images.length) {
+      setProgress(Math.floor((loadedCount / eagerImages.length) * 100));
+      if (loadedCount === eagerImages.length) {
         setTimeout(() => {
           setIsLoading(false);
         }, 200);
       }
     };
 
-    images.forEach((img) => {
+    // Timeout fallback: force completion after 8 seconds max
+    const timeoutId = setTimeout(() => {
+      setProgress(100);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 200);
+    }, 8000);
+
+    eagerImages.forEach((img) => {
       if (img.complete) onImageLoad();
       else {
         img.addEventListener("load", onImageLoad);
@@ -120,7 +130,8 @@ const Home = () => {
     });
 
     return () => {
-      images.forEach((img) => {
+      clearTimeout(timeoutId);
+      eagerImages.forEach((img) => {
         img.removeEventListener("load", onImageLoad);
         img.removeEventListener("error", onImageLoad);
       });
