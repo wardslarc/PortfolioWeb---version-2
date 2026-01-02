@@ -30,7 +30,7 @@ const ArtSection = () => {
         medium: "Digital Art",
         year: "2024",
         description: "My Gf",
-        imageUrl: "/drawings/baby.jpg",
+        imageUrl: "/optimized/baby.webp",
         category: "digital",
         likes: 127,
         isLiked: false,
@@ -54,7 +54,7 @@ const ArtSection = () => {
         description:
           "My entry for a contest last 2023.",
         imageUrl:
-          "/drawings/comm.jpg",
+          "/optimized/comm.webp",
         category: "digital",
         likes: 203,
         isLiked: true,
@@ -67,7 +67,7 @@ const ArtSection = () => {
         description:
           "Alyssa from The End of F-ing World Series from Netflix.",
         imageUrl:
-          "/drawings/nm.jpg",
+          "/optimized/nm.webp",
         category: "digital",
         likes: 156,
         isLiked: false,
@@ -80,7 +80,7 @@ const ArtSection = () => {
         description:
           "One of my sketches.",
         imageUrl:
-          "/drawings/cats.jpg",
+          "/optimized/cats.webp",
         category: "digital",
         likes: 74,
         isLiked: false,
@@ -93,7 +93,7 @@ const ArtSection = () => {
         description:
           "Environment art practice.",
         imageUrl:
-          "/drawings/sink.jpg",
+          "/optimized/sink.webp",
         category: "digital",
         likes: 312,
         isLiked: true,

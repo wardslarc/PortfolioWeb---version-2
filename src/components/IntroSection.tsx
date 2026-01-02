@@ -110,15 +110,21 @@ const IntroSection = () => {
                     <motion.img
                       animate={{ opacity: isHovering ? 0 : 1 }}
                       transition={{ duration: 0.5 }}
-                      src="./photo1.jpg"
+                      src="./optimized/photo1.webp"
+                      srcSet="./optimized/photo1.webp, ./optimized/photo1.png"
                       alt="Profile"
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover absolute inset-0"
                     />
                     <motion.img
                       animate={{ opacity: isHovering ? 1 : 0 }}
                       transition={{ duration: 0.5 }}
-                      src="./photo2.jpg"
+                      src="./optimized/photo2.webp"
+                      srcSet="./optimized/photo2.webp, ./optimized/photo2.png"
                       alt="Profile Alternate"
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover absolute inset-0"
                     />
                   </div>

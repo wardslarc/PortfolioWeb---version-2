@@ -38,12 +38,13 @@ const HeroSection = () => {
     return "night";
   };
 
-  // Determine background image based on time of day
+  // Determine background image based on time of day (using optimized versions)
   const getBackgroundImage = () => {
     const period = getTimePeriod();
-    if (period === "morning") return "url('/morning.png')";
-    if (period === "afternoon") return "url('/afternoon.png')";
-    return "url('/night.png')";
+    // Use optimized WebP images with PNG fallback via CSS
+    if (period === "morning") return "url('/optimized/morning.webp'), url('/optimized/morning.png')";
+    if (period === "afternoon") return "url('/optimized/afternoon.webp'), url('/optimized/afternoon.png')";
+    return "url('/optimized/night.webp'), url('/optimized/night.png')";
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
