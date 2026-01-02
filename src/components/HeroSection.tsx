@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import { ArrowDown, Github, Linkedin, Twitter, FileText, Flashlight } from "lucide-react";
 import { Button } from "./ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
-import { Link } from "react-scroll";
 import { useTheme } from "../context/ThemeContext";
 
 // Animation variants
@@ -211,7 +210,13 @@ const HeroSection = () => {
           animate={{ opacity: 1 }}
           transition={{ delay: 1.5 }}
         >
-          <Link to="intro" smooth={true} duration={600}>
+          <a href="#about-me" onClick={(e) => {
+            e.preventDefault();
+            const element = document.getElementById('about-me');
+            if (element) {
+              element.scrollIntoView({ behavior: 'smooth' });
+            }
+          }}>
             <Button
               className="px-8 py-3 rounded-sm font-semibold transition-all flex items-center hover:opacity-80"
               style={{
@@ -223,7 +228,7 @@ const HeroSection = () => {
               About Me
               <ArrowDown size={16} className="ml-2" />
             </Button>
-          </Link>
+          </a>
           
           <a href="/Escalo-Carls_Resume.pdf" target="_blank" rel="noopener noreferrer">
             <Button

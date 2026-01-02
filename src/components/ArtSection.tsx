@@ -4,7 +4,6 @@ import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { Heart, Bookmark, Share } from "lucide-react";
-import { Link } from "react-scroll";
 
 interface Artwork {
   id: number;
@@ -272,11 +271,17 @@ const ArtSection = () => {
               I'm available for commissioned artwork and creative projects.
               Let's bring your vision to life!
               </p>
-            <Link to="contact" smooth={true} duration={600}>
+            <a href="#contact" onClick={(e) => {
+              e.preventDefault();
+              const element = document.getElementById('contact');
+              if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+              }
+            }}>
               <Button size="lg" className="bg-primary hover:bg-primary/90">
                 Get in Touch
               </Button>
-            </Link>
+            </a>
           </div>
         </div>
         </div>
