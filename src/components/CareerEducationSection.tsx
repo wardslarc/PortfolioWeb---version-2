@@ -73,8 +73,8 @@ const CareerEducationSection = () => {
       period: "Oct 2023 - Nov 2025",
       location: "Taguig, Philippines",
       description: "Internal tools development, infrastructure management, and corporate web support",
-      logo: "/citimax.png",
-      previewImage: "/citimax.png",
+      logo: "/optimized/citimax.webp",
+      previewImage: "/optimized/citimax.webp",
       achievements: [
         "Spearheaded development of multiple internal web applications using React.js, TypeScript, and Firebase",
         "Integrated Google Sheets API to automate task tracking and ticketing, significantly improving workflow efficiency",
@@ -91,8 +91,8 @@ const CareerEducationSection = () => {
       period: "Mar 2023 - June 2023",
       location: "Taguig, Philippines",
       description: "Full-stack development with focus on user-centered design and security implementation",
-      logo: "/bismac.png",
-      previewImage: "/bismac.png",
+      logo: "/optimized/bismac.webp",
+      previewImage: "/optimized/bismac.webp",
       achievements: [
         "Developed a library seat status monitoring system that enabled real-time tracking, improving space utilization and user visibility",
         "Collaborated on an e-commerce prototype, refining UI responsiveness and interaction design to enhance the user experience",
@@ -111,8 +111,8 @@ const CareerEducationSection = () => {
       period: "May 2019 - Sept 2023",
       location: "Taguig, Philippines",
       description: "Focused on web development, software engineering, and social computing principles",
-      logo: "/umaklogo.png",
-      previewImage: "/umak.png",
+      logo: "/optimized/umaklogo.webp",
+      previewImage: "/optimized/umak.webp",
       website: "https://www.umak.edu.ph/",
       type: "education",
     },
@@ -194,6 +194,8 @@ const CareerEducationSection = () => {
                         <img
                           src={item.logo}
                           alt={item.company}
+                          loading="lazy"
+                          decoding="async"
                           className="w-10 h-10 rounded-lg object-cover border border-gray-200"
                         />
                       )}
@@ -263,6 +265,8 @@ const CareerEducationSection = () => {
                         <img
                           src={item.previewImage}
                           alt="Institution preview"
+                          loading="lazy"
+                          decoding="async"
                           className="w-full h-full object-cover"
                         />
                         <div className="absolute inset-0 bg-black/20 flex items-center justify-center hover:bg-black/30 transition-all">
@@ -319,6 +323,8 @@ const CareerEducationSection = () => {
                         <img
                           src={item.logo}
                           alt={item.institution}
+                          loading="lazy"
+                          decoding="async"
                           className="w-10 h-10 rounded-lg object-cover border border-gray-200"
                         />
                       )}
@@ -362,7 +368,7 @@ const CareerEducationSection = () => {
                       </div>
                       <div className="w-full h-48 bg-gray-100 relative">
                         <img
-                          src={item.previewImage || "/umak.png"}
+                          src={item.previewImage || "/optimized/umak.webp"}
                           alt="Institution preview"
                           className="w-full h-full object-cover"
                         />
