@@ -1,14 +1,16 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, lazy, Suspense } from "react";
 import HeroSection from "./HeroSection";
 import IntroSection from "./IntroSection";
 import CareerEducationSection from "./CareerEducationSection";
-import ProjectsSection from "./ProjectsSection";
-import SkillsSection from "./SkillsSection";
-import ArtSection from "./ArtSection";
-import ContactSection from "./ContactSection";
-import ChatBot from "./ChatBot";
 import { injectSchemaMarkup, generatePersonSchema, generateWebsiteSchema } from "@/utils/seoUtils";
 import { ThemeProvider } from "@/context/ThemeContext";
+
+// Lazy load heavy components
+const ProjectsSection = lazy(() => import("./ProjectsSection"));
+const SkillsSection = lazy(() => import("./SkillsSection"));
+const ArtSection = lazy(() => import("./ArtSection"));
+const ContactSection = lazy(() => import("./ContactSection"));
+const ChatBot = lazy(() => import("./ChatBot"));
 
 // Loading Screen - Professional Design
 const LoadingScreen = ({ progress }) => {
@@ -62,6 +64,11 @@ const LoadingScreen = ({ progress }) => {
     </div>
   );
 };
+
+// Lazy section fallback - lightweight skeleton loader
+const SectionSkeleton = () => (
+  <div className="min-h-96 bg-gradient-to-b from-gray-100 to-gray-50 dark:from-gray-900 dark:to-gray-800 animate-pulse" />
+);
 
 // Home Page
 const Home = () => {
@@ -168,19 +175,29 @@ const Home = () => {
             <CareerEducationSection />
           </section>
           <section id="projects" ref={sectionRefs.projects}>
-            <ProjectsSection />
+            <Suspense fallback={<SectionSkeleton />}>
+              <ProjectsSection />
+            </Suspense>
           </section>
           <section id="skills" ref={sectionRefs.skills}>
-            <SkillsSection />
+            <Suspense fallback={<SectionSkeleton />}>
+              <SkillsSection />
+            </Suspense>
           </section>
           <section id="art" ref={sectionRefs.art}>
-            <ArtSection />
+            <Suspense fallback={<SectionSkeleton />}>
+              <ArtSection />
+            </Suspense>
           </section>
           <section id="contact" ref={sectionRefs.contact}>
-            <ContactSection />
+            <Suspense fallback={<SectionSkeleton />}>
+              <ContactSection />
+            </Suspense>
           </section>
 
-          <ChatBot />
+          <Suspense fallback={null}>
+            <ChatBot />
+          </Suspense>
         </div>
 
         <footer className="py-10 text-center text-base text-muted-foreground border-t border-border">
