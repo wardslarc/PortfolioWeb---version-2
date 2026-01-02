@@ -14,11 +14,9 @@ import { ThemeProvider } from "@/context/ThemeContext";
 const LoadingScreen = ({ progress }) => {
   return (
     <div className="fixed inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-slate-950 to-black z-50 overflow-hidden">
-      {/* Animated background elements */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
-        <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
-        <div className="absolute bottom-1/4 right-1/3 w-96 h-96 bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000"></div>
+      {/* Simplified background - removed expensive mix-blend-multiply blobs */}
+      <div className="absolute inset-0 opacity-30">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 via-slate-950 to-slate-900"></div>
       </div>
 
       {/* Content Container */}
@@ -33,12 +31,11 @@ const LoadingScreen = ({ progress }) => {
 
         {/* Progress Bar */}
         <div className="w-72 space-y-4">
-          {/* Outer container with border */}
+          {/* Simplified progress bar without blur effect */}
           <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full blur opacity-50"></div>
-            <div className="relative w-full h-2 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
+            <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
               <div
-                className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-indigo-500 transition-all duration-300 rounded-full shadow-lg"
+                className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-indigo-500 transition-all duration-300 rounded-full"
                 style={{ width: `${progress}%` }}
               >
                 <div className="absolute inset-0 bg-white opacity-20 animate-shimmer"></div>

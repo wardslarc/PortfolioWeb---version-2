@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,42 +22,38 @@ const SkillsSection = ({
   skills?: SkillProps[];
 }) => {
   const [showAll, setShowAll] = useState(false);
-  const displayedSkills = showAll ? skills : skills.slice(0, 6);
+  const displayedSkills = showAll ? skills : skills.slice(0, 8);
 
   return (
     <section id="skills" className="py-20 bg-gray-50 dark:bg-slate-900">
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: false, margin: "-100px" }}
+        transition={{ duration: 0.3 }}
+        viewport={{ once: true }}
         className="w-full"
       >
         <div className="container mx-auto px-4">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">My Skills</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Current Technologies</h2>
           <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-            Here are the technologies I work with and my proficiency levels in
-            each.
+            I'm proficient in a range of modern technologies that empower me to build highly functional solutions.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <AnimatePresence>
-            {displayedSkills.map((skill, index) => (
-              <SkillCard key={skill.name} skill={skill} index={index} />
-            ))}
-          </AnimatePresence>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          {displayedSkills.map((skill, index) => (
+            <SkillCard key={skill.name} skill={skill} index={index} />
+          ))}
         </div>
 
-        {skills.length > 6 && (
+        {skills.length > 8 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -131,64 +127,44 @@ const SkillCard = ({ skill, index }: { skill: SkillProps; index: number }) => {
 
 const defaultSkills: SkillProps[] = [
   {
-    name: "JavaScript",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg",
-    description: "Modern ES6+ JavaScript, DOM manipulation, and asynchronous programming",
+    name: "MongoDB",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg",
+    description: "NoSQL database management",
+  },
+  {
+    name: "Express",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg",
+    description: "Backend framework for Node.js",
   },
   {
     name: "React",
     icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
-    description: "Building interactive UIs with React and its ecosystem",
+    description: "Frontend library for UI",
+  },
+  {
+    name: "Node.js",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg",
+    description: "JavaScript runtime environment",
+  },
+  {
+    name: "JavaScript",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg",
+    description: "Core programming language",
   },
   {
     name: "TypeScript",
     icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg",
-    description: "Developing type-safe applications with TypeScript",
+    description: "Type-safe JavaScript",
   },
   {
-    name: "Git",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg",
-    description: "Version control, branching strategies, and collaborative development",
+    name: "Vite",
+    icon: "https://vitejs.dev/logo.svg",
+    description: "Next generation frontend build tool",
   },
   {
-    name: "GitHub",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg",
-    description: "Code collaboration, pull requests, and project management",
-  },
-  {
-    name: "Tailwind CSS",
-    icon: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Tailwind_CSS_Logo.svg",
-    description: "Creating responsive designs with utility-first CSS",
-  },
-  {
-    name: "HTML",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg",
-    description: "Semantic markup and modern HTML5 features",
-  },
-  {
-    name: "CSS",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg",
-    description: "Advanced styling, layouts, animations and responsive design",
-  },
-  {
-    name: "Firebase",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg",
-    description: "Realtime apps and hosting using Firebase services",
-  },
-  {
-    name: "GoDaddy",
-    icon: "https://download.logo.wine/logo/GoDaddy/GoDaddy-Logo.wine.png",
-    description: "Deploying and managing domains and hosting via GoDaddy",
-  },
-  {
-    name: "Vercel",
-    icon: "https://assets.vercel.com/image/upload/front/favicon/vercel/180x180.png",
-    description: "Hosting high-performance frontend apps with Vercel",
-  },
-  {
-    name: "MongoDB",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg",
-    description: "NoSQL database management and document-based data modeling",
+    name: "Next.js",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg",
+    description: "React framework for production",
   },
 ];
 

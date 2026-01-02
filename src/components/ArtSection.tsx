@@ -132,9 +132,8 @@ const ArtSection = () => {
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: false, margin: "-100px" }}
+        transition={{ duration: 0.3 }}
+        viewport={{ once: true }}
         className="w-full"
       >
         <div className="container mx-auto px-4">
@@ -213,6 +212,8 @@ const ArtSection = () => {
                     <img
                       src={artwork.imageUrl}
                       alt={artwork.title}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full aspect-square object-cover"
                     />
                   )}
