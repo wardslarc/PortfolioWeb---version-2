@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -32,17 +32,19 @@ const ProjectsSection = ({ projects = defaultProjects }: ProjectsSectionProps) =
 
   const categories = ["all", ...Array.from(new Set(projects.map((p) => p.category.toLowerCase().trim())))];
 
-  const filteredProjects = projects.filter((project) => {
-    const categoryMatch =
-      selectedCategory === "all" ||
-      project.category.toLowerCase().trim() === selectedCategory;
+  const filteredProjects = useMemo(() => {
+    return projects.filter((project) => {
+      const categoryMatch =
+        selectedCategory === "all" ||
+        project.category.toLowerCase().trim() === selectedCategory;
 
-    const searchMatch =
-      project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      project.description.toLowerCase().includes(searchQuery.toLowerCase());
+      const searchMatch =
+        project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        project.description.toLowerCase().includes(searchQuery.toLowerCase());
 
-    return categoryMatch && searchMatch;
-  });
+      return categoryMatch && searchMatch;
+    });
+  }, [projects, selectedCategory, searchQuery]);
 
   const projectsToShow = showAll ? filteredProjects : filteredProjects.slice(0, 3);
 
@@ -66,9 +68,8 @@ const ProjectsSection = ({ projects = defaultProjects }: ProjectsSectionProps) =
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: false, margin: "-100px" }}
+        transition={{ duration: 0.3 }}
+        viewport={{ once: true }}
         className="w-full"
       >
         <div className="container mx-auto px-4">
@@ -119,6 +120,8 @@ const ProjectsSection = ({ projects = defaultProjects }: ProjectsSectionProps) =
                     <img
                       src={project.image}
                       alt={project.title}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                     />
                   </div>

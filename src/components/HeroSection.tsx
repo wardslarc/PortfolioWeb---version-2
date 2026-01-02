@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowDown, Github, Linkedin, Twitter, FileText } from "lucide-react";
+import { ArrowDown, Github, Linkedin, Twitter, FileText, Flashlight } from "lucide-react";
 import { Button } from "./ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 import { Link } from "react-scroll";
@@ -12,21 +12,22 @@ const containerVariants = {
   show: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.25,
-      delayChildren: 0.3,
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
     },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 30, scale: 0.98 },
-  show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.6, ease: "easeOut" } },
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { duration: 0.3, ease: "easeOut" } },
 };
 
 const HeroSection = () => {
   const { manualTimePeriod } = useTheme();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
+  const [flashlightOn, setFlashlightOn] = useState(false);
 
   // Determine time period
   const getTimePeriod = () => {
@@ -53,12 +54,21 @@ const HeroSection = () => {
     });
   };
 
+  const handleClick = () => {
+    if (getTimePeriod() === "night") {
+      const audio = new Audio('/flashlight.mp3');
+      audio.play().catch(error => console.log('Audio play failed:', error));
+    }
+    setFlashlightOn(!flashlightOn);
+  };
+
   return (
     <section
-      className="relative min-h-screen overflow-hidden text-white"
+      className="relative min-h-screen overflow-hidden text-white cursor-crosshair"
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
+      onClick={handleClick}
     >
       {/* Background Image */}
       <div
@@ -66,53 +76,42 @@ const HeroSection = () => {
         style={{ backgroundImage: getBackgroundImage() }}
       />
 
-      {/* Rain effect */}
-      <div className="absolute inset-0 z-20 overflow-hidden pointer-events-none">
-        {Array.from({ length: 100 }).map((_, i) => (
+      {/* Flashlight effect - follows cursor, toggle with click */}
+      {getTimePeriod() === "night" && flashlightOn && (
+        <>
+          {/* Flashlight beam */}
           <motion.div
-            key={i}
-            className="absolute w-0.5 h-5 bg-white/10 rounded-full"
+            className="absolute z-30 pointer-events-none rounded-full"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
+              left: mousePosition.x - 100,
+              top: mousePosition.y - 100,
+              width: 200,
+              height: 200,
+              background:
+                "radial-gradient(circle, rgba(255,200,100,0.6) 0%, rgba(255,200,100,0.3) 40%, rgba(255,200,100,0.1) 70%, transparent 100%)",
+              filter: "blur(10px)",
+              mixBlendMode: "screen",
+              boxShadow: "0 0 50px rgba(255,200,100,0.5)",
             }}
-            animate={{ y: [0, 100], opacity: [0.2, 0.5, 0.2] }}
-            transition={{
-              duration: Math.random() * 2 + 1,
-              repeat: Infinity,
-              repeatType: "loop",
-              delay: Math.random(),
-            }}
+            transition={{ type: "tween", duration: 0.05 }}
           />
-        ))}
-      </div>
 
-      {/* Cursor glow - hidden for morning and afternoon */}
-      {getTimePeriod() === "night" && isHovering && (
-        <motion.div
-          className="absolute z-30 pointer-events-none"
-          style={{
-            left: mousePosition.x - 150,
-            top: mousePosition.y - 150,
-            width: 300,
-            height: 300,
-            background:
-              "radial-gradient(circle, rgba(251,186,60,0.2) 0%, rgba(251,186,60,0.08) 40%, transparent 70%)",
-            borderRadius: "50%",
-            mixBlendMode: "screen",
-            filter: "blur(20px)",
-          }}
-          animate={{
-            opacity: [0.9, 0.4, 0.7, 1, 0.3, 0.85, 0.6, 0.95],
-            scale: [0.95, 1.02, 0.98, 1, 0.96, 1.01, 0.99, 1],
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            repeatType: "loop",
-            ease: "easeInOut",
-          }}
-        />
+          {/* Bright center spot */}
+          <motion.div
+            className="absolute z-30 pointer-events-none rounded-full"
+            style={{
+              left: mousePosition.x - 40,
+              top: mousePosition.y - 40,
+              width: 80,
+              height: 80,
+              background:
+                "radial-gradient(circle, rgba(255,220,150,0.9) 0%, rgba(255,200,100,0.5) 60%, transparent 100%)",
+              filter: "blur(8px)",
+              mixBlendMode: "screen",
+            }}
+            transition={{ type: "tween", duration: 0.05 }}
+          />
+        </>
       )}
 
       {/* Main Content */}
@@ -128,7 +127,7 @@ const HeroSection = () => {
             className={`text-base uppercase tracking-widest cursor-pointer mb-8 ${
               getTimePeriod() === "morning" ? "text-black" : getTimePeriod() === "afternoon" ? "text-gray-800" : "text-gray-400"
             }`}
-            whileHover={{ opacity: [1, 0.5, 1, 0.5, 1] }}
+            whileHover={{ opacity: [1, 0.4, 1, 0.4, 1] }}
             transition={{ duration: 0.6 }}
           >
             Based in Cavite, Philippines
@@ -148,7 +147,7 @@ const HeroSection = () => {
               backgroundClip: "text",
               filter: "drop-shadow(0 0 20px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 40px rgba(255, 255, 255, 0.6)) drop-shadow(0 0 60px rgba(255, 255, 255, 0.4))"
             }}
-            whileHover={{ opacity: [1, 0.5, 1, 0.5, 1] }}
+            whileHover={{ opacity: [1, 0.4, 1, 0.4, 1] }}
             transition={{ duration: 0.6 }}
           >
           Where <span style={{ fontFamily: "'Lora', serif" }}>Clean Code</span>
@@ -160,7 +159,7 @@ const HeroSection = () => {
             variants={itemVariants}
             className="mt-8 text-xl max-w-2xl cursor-pointer"
             style={{ color: getTimePeriod() === "night" ? "white" : "#181818" }}
-            whileHover={{ opacity: [1, 0.5, 1, 0.5, 1] }}
+            whileHover={{ opacity: [1, 0.4, 1, 0.4, 1] }}
             transition={{ duration: 0.6 }}
           >
             Hi, I'm Carls Dale. I create intuitive, visually stunning and highly functional web applications.

@@ -42,15 +42,15 @@ const IntroSection = () => {
     show: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.1,
+        staggerChildren: 0.05,
+        delayChildren: 0.05,
       },
     },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+    hidden: { opacity: 0 },
+    show: { opacity: 1, transition: { duration: 0.3, ease: "easeOut" } },
   };
 
   return (
@@ -58,9 +58,8 @@ const IntroSection = () => {
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: false, margin: "-100px" }}
+        transition={{ duration: 0.3 }}
+        viewport={{ once: true }}
         className="w-full"
       >
         <div className="container mx-auto px-4">
@@ -153,15 +152,15 @@ const IntroSection = () => {
                 <p className="text-xl text-slate-600 dark:text-slate-400 font-medium mb-2">
                   Full-Stack Web Developer • {age} years old
                 </p>
-              </div>
+              </div>  
 
               {/* Bio */}
               <div className="space-y-2 pt-4 border-t border-slate-200 dark:border-slate-700">
                 <p className="text-base text-slate-700 dark:text-slate-300 leading-relaxed">
-                  <span className="font-semibold text-slate-900 dark:text-white">{getGreeting()}</span>I'm a Full-Stack Web Developer from the Philippines with 2+ years of experience building high-performance web applications. I specialize in the MERN stack and TypeScript, with a focus on security, clean code, and user experience.
+                  <span className="font-semibold text-slate-900 dark:text-white">{getGreeting()}</span>I'm a Full-Stack Web Developer from the Philippines passionate about building scalable, secure web applications that solve real-world problems. With 2+ years of hands-on experience, I specialize in the MERN stack and TypeScript, crafting solutions that balance performance with clean, maintainable code.
                 </p>
                 <p className="text-base text-slate-700 dark:text-slate-300 leading-relaxed">
-                  I love creating unique features. This portfolio features a dynamic time-aware theme that detects your local time and changes the background accordingly—try clicking the <span className="font-semibold text-slate-900 dark:text-white">sparkles button (✨)</span> to test it. Outside of coding, I solve LeetCode problems and love tackling new challenges.
+                  I've engineered a React.js & Firebase ticketing system used by 80+ employees across multiple companies, boosted a corporate website to #1 organic search rankings (1,000+ monthly users), and managed full-stack infrastructure with Vercel and Cloudflare. What excites me most is creating elegant solutions to complex problems—like the time-aware theme in this portfolio that you can test with the <span className="font-semibold text-slate-900 dark:text-white">sparkles button (✨)</span>. When I'm not coding, I'm solving LeetCode challenges and exploring new technologies.
                 </p>
               </div>  
 

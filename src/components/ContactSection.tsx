@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Send, CheckCircle, Clock, Loader2, Shield, Mail } from "lucide-react";
+import { useTheme } from "../context/ThemeContext";
 
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -52,6 +53,7 @@ type SubmissionStage =
   | "error";
 
 const ContactSection = () => {
+  const { manualTimePeriod } = useTheme();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionStage, setSubmissionStage] =
@@ -60,29 +62,22 @@ const ContactSection = () => {
   const [submissionCount, setSubmissionCount] = useState(0);
   const [lastSubmissionTime, setLastSubmissionTime] = useState(0);
   const [timeLeft, setTimeLeft] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
-  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Detect mobile devices and handle video loading
-  useEffect(() => {
-    const checkMobile = () => {
-      const mobile = window.innerWidth < 768;
-      setIsMobile(mobile);
+  // Determine time period
+  const getTimePeriod = () => {
+    if (manualTimePeriod) return manualTimePeriod;
+    const hour = new Date().getHours();
+    if (hour >= 5 && hour < 12) return "morning";
+    if (hour >= 12 && hour < 18) return "afternoon";
+    return "night";
+  };
 
-      if (!mobile && videoRef.current) {
-        videoRef.current.load();
-      }
-    };
-
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  const handleVideoLoad = () => {
-    setIsVideoLoaded(true);
+  // Determine background image based on time of day
+  const getBackgroundImage = () => {
+    const period = getTimePeriod();
+    if (period === "morning") return "url('/morning.png')";
+    if (period === "afternoon") return "url('/afternoon.png')";
+    return "url('/night.png')";
   };
 
   // Load submission history from sessionStorage
@@ -302,42 +297,24 @@ const ContactSection = () => {
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: false, margin: "-100px" }}
+        transition={{ duration: 0.3 }}
+        viewport={{ once: true }}
         className="w-full relative z-10 flex-1 flex flex-col justify-center py-20"
       >
       {/* Optimized Background */}
       <div className="absolute inset-0 z-0">
-        {!isMobile ? (
-          <video
-            ref={videoRef}
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="w-full h-full object-cover"
-            preload="metadata"
-            onLoadedData={handleVideoLoad}
-            poster="/beach-static.jpg"
-          >
-            <source src="/beach.mp4" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        ) : (
-          <div
-            className="w-full h-full object-cover bg-cover bg-center"
-            style={{ backgroundImage: "url('/beachstatic.jpg')" }}
-          />
-        )}
-        <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px]"></div>
+        <div
+          className="w-full h-full bg-center bg-cover"
+          style={{ backgroundImage: getBackgroundImage() }}
+        />
+        <div className="absolute inset-0 bg-black/40"></div>
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
           viewport={{ once: true }}
           className="text-center mb-12"
         >
@@ -353,11 +330,11 @@ const ContactSection = () => {
         <div className="max-w-3xl mx-auto">
           {isSubmitted ? (
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.2 }}
             >
-              <Alert className="bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 mb-6 backdrop-blur-sm">
+              <Alert className="bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 mb-6">
                 <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
                 <AlertDescription className="ml-2 text-green-800 dark:text-green-300">
                   Thank you for your message! I'll get back to you as soon as
@@ -367,7 +344,7 @@ const ContactSection = () => {
               <div className="flex justify-center">
                 <Button
                   onClick={resetForm}
-                  className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm"
+                  className="bg-white/20 hover:bg-white/30 text-white border-white/30"
                 >
                   Send another message
                 </Button>
@@ -375,12 +352,12 @@ const ContactSection = () => {
             </motion.div>
           ) : (
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
               viewport={{ once: true }}
             >
-              <Card className="border-white/20 bg-white/10 backdrop-blur-md shadow-2xl">
+              <Card className="border-white/20 bg-white/5 shadow-lg">
                 <CardHeader>
                   <CardTitle className="text-white">Contact Form</CardTitle>
                   <CardDescription className="text-white/80">
@@ -399,12 +376,14 @@ const ContactSection = () => {
                     <motion.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      className="absolute inset-0 bg-black/50 backdrop-blur-sm rounded-lg z-20 flex items-center justify-center"
+                      transition={{ duration: 0.2 }}
+                      className="absolute inset-0 bg-black/50 rounded-lg z-20 flex items-center justify-center"
                     >
                       <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
+                        initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="bg-white/20 backdrop-blur-md rounded-lg p-6 max-w-sm mx-4 border border-white/30"
+                        transition={{ duration: 0.2 }}
+                        className="bg-white/10 rounded-lg p-6 max-w-sm mx-4 border border-white/30"
                       >
                         <div className="flex items-center gap-3 mb-4">
                           <div className="animate-spin text-white">
@@ -468,7 +447,7 @@ const ContactSection = () => {
                                 <Input
                                   placeholder="Your name"
                                   {...field}
-                                  className="bg-white/20 border-white/30 text-white placeholder:text-white/60 backdrop-blur-sm"
+                                  className="bg-white/20 border-white/30 text-white placeholder:text-white/60"
                                   disabled={isRateLimited || isSubmitting}
                                 />
                               </FormControl>
@@ -489,7 +468,7 @@ const ContactSection = () => {
                                   placeholder="your.email@example.com"
                                   type="email"
                                   {...field}
-                                  className="bg-white/20 border-white/30 text-white placeholder:text-white/60 backdrop-blur-sm"
+                                  className="bg-white/20 border-white/30 text-white placeholder:text-white/60"
                                   disabled={isRateLimited || isSubmitting}
                                 />
                               </FormControl>
@@ -511,7 +490,7 @@ const ContactSection = () => {
                               <Input
                                 placeholder="What is this regarding?"
                                 {...field}
-                                className="bg-white/20 border-white/30 text-white placeholder:text-white/60 backdrop-blur-sm"
+                                className="bg-white/20 border-white/30 text-white placeholder:text-white/60"
                                 disabled={isRateLimited || isSubmitting}
                               />
                             </FormControl>
@@ -531,7 +510,7 @@ const ContactSection = () => {
                             <FormControl>
                               <Textarea
                                 placeholder="Write your message here..."
-                                className="min-h-[150px] bg-white/20 border-white/30 text-white placeholder:text-white/60 backdrop-blur-sm resize-none"
+                                className="min-h-[150px] bg-white/20 border-white/30 text-white placeholder:text-white/60 resize-none"
                                 {...field}
                                 disabled={isRateLimited || isSubmitting}
                               />
@@ -566,7 +545,6 @@ const ContactSection = () => {
                       {rateLimitError && (
                         <Alert
                           variant="destructive"
-                          className="backdrop-blur-sm"
                         >
                           <Clock className="h-4 w-4" />
                           <AlertDescription>
@@ -582,7 +560,7 @@ const ContactSection = () => {
 
                       <Button
                         type="submit"
-                        className="w-full bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-200 relative"
+                        className="w-full bg-white/20 hover:bg-white/30 text-white border-white/30 transition-all duration-200 relative"
                         disabled={isSubmitting || isRateLimited}
                         size="lg"
                       >
