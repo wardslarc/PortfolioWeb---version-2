@@ -62,7 +62,7 @@ export default defineConfig({
       'X-Frame-Options': 'DENY', // Prevent clickjacking
       'X-XSS-Protection': '1; mode=block', // Enable XSS protection
       'Referrer-Policy': 'strict-origin-when-cross-origin', // Control referrer info
-      'Content-Security-Policy': "default-src 'self'; script-src 'self' 'wasm-unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://portfolio-api-beta-ivory.vercel.app ws: wss:; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
+      'Content-Security-Policy': "default-src 'self'; script-src 'self' 'wasm-unsafe-eval' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://portfolio-api-beta-ivory.vercel.app https://cloudflareinsights.com ws: wss:; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
       'Cache-Control': 'public, max-age=3600',
     },
   },
