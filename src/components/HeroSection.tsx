@@ -1,22 +1,22 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { ArrowDown, Github, Linkedin, Twitter, FileText, Flashlight } from "lucide-react";
 import { Button } from "./ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
-import { Link } from "react-scroll";
 import { useTheme } from "../context/ThemeContext";
+import { getNetworkStatus } from "@/lib/mobilePerformance";
 
-// Animation variants
-const containerVariants = {
+// Animation variants with mobile optimization
+const getContainerVariants = (isSlowNetwork: boolean) => ({
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2,
+      staggerChildren: isSlowNetwork ? 0.05 : 0.1,
+      delayChildren: isSlowNetwork ? 0.1 : 0.2,
     },
   },
-};
+});
 
 const itemVariants = {
   hidden: { opacity: 0 },
@@ -28,6 +28,10 @@ const HeroSection = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
   const [flashlightOn, setFlashlightOn] = useState(false);
+
+  // Detect slow network for mobile optimization
+  const networkStatus = useMemo(() => getNetworkStatus(), []);
+  const containerVariants = useMemo(() => getContainerVariants(networkStatus.isSlowNetwork), [networkStatus.isSlowNetwork]);
 
   // Determine time period
   const getTimePeriod = () => {
@@ -211,7 +215,13 @@ const HeroSection = () => {
           animate={{ opacity: 1 }}
           transition={{ delay: 1.5 }}
         >
-          <Link to="intro" smooth={true} duration={600}>
+          <a href="#about-me" onClick={(e) => {
+            e.preventDefault();
+            const element = document.getElementById('about-me');
+            if (element) {
+              element.scrollIntoView({ behavior: 'smooth' });
+            }
+          }}>
             <Button
               className="px-8 py-3 rounded-sm font-semibold transition-all flex items-center hover:opacity-80"
               style={{
@@ -223,7 +233,7 @@ const HeroSection = () => {
               About Me
               <ArrowDown size={16} className="ml-2" />
             </Button>
-          </Link>
+          </a>
           
           <a href="/Escalo-Carls_Resume.pdf" target="_blank" rel="noopener noreferrer">
             <Button

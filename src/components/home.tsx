@@ -12,6 +12,35 @@ const ArtSection = lazy(() => import("./ArtSection"));
 const ContactSection = lazy(() => import("./ContactSection"));
 const ChatBot = lazy(() => import("./ChatBot"));
 
+// Hook to detect if user is on a slow network (mobile-friendly optimization)
+const useNetworkStatus = () => {
+  const [isSlowNetwork, setIsSlowNetwork] = useState(false);
+  const [effectiveType, setEffectiveType] = useState<string>('4g');
+
+  useEffect(() => {
+    // Check if connection API is available
+    const connection = (navigator as any).connection || 
+                      (navigator as any).mozConnection || 
+                      (navigator as any).webkitConnection;
+
+    if (connection) {
+      setEffectiveType(connection.effectiveType);
+      setIsSlowNetwork(connection.effectiveType === '3g' || connection.effectiveType === '4g');
+      
+      // Listen for connection changes
+      const handleChange = () => {
+        setEffectiveType(connection.effectiveType);
+        setIsSlowNetwork(connection.effectiveType === '3g' || connection.effectiveType === '4g');
+      };
+      
+      connection.addEventListener('change', handleChange);
+      return () => connection.removeEventListener('change', handleChange);
+    }
+  }, []);
+
+  return { isSlowNetwork, effectiveType };
+};
+
 // Loading Screen - Professional Design
 const LoadingScreen = ({ progress }) => {
   return (

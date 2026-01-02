@@ -36,6 +36,10 @@ export default defineConfig({
           'vendor-form': ['react-hook-form', '@hookform/resolvers', 'zod'],
           'vendor-utils': ['clsx', 'class-variance-authority'],
         },
+        // Optimize chunk names for better caching
+        entryFileNames: 'assets/[name]-[hash].js',
+        chunkFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash][extname]',
       },
     },
     chunkSizeWarningLimit: 1000,
