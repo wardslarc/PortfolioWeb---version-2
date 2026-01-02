@@ -45,17 +45,19 @@
     <link rel="manifest" href="/manifest.json" />
     <link rel="apple-touch-icon" href="/cde.png" />
     
-    <!-- Preload Critical Resources -->
+    <!-- Preload Critical Resources for Mobile Performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="dns-prefetch" href="https://portfolio-api-beta-ivory.vercel.app" />
     
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Merriweather:wght@400;700&display=swap" rel="stylesheet" />
+    <!-- Preload critical fonts to reduce render-blocking -->
+    <link rel="preload" href="https://fonts.gstatic.com/s/inter/v13/UcCO_p8P0PLY-1-uqXbRpPw.woff2" as="font" type="font/woff2" crossorigin />
+    
+    <!-- Fonts with optimized loading strategy -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Merriweather:wght@400;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Merriweather:wght@400;700&display=swap" rel="stylesheet" /></noscript>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
 
-  </body>
-</html>
