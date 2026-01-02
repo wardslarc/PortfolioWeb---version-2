@@ -32,7 +32,7 @@ export default defineConfig({
         manualChunks: {
           'vendor-react': ['react', 'react-dom', 'react-router-dom'],
           'vendor-animation': ['framer-motion'],
-          'vendor-ui': ['lucide-react', '@radix-ui/react-accordion', '@radix-ui/react-alert-dialog', '@radix-ui/react-aspect-ratio', '@radix-ui/react-avatar', '@radix-ui/react-badge', '@radix-ui/react-button'],
+          'vendor-ui': ['lucide-react'],
           'vendor-form': ['react-hook-form', '@hookform/resolvers', 'zod'],
           'vendor-utils': ['clsx', 'class-variance-authority'],
         },
