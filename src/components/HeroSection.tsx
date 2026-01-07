@@ -235,7 +235,7 @@ const HeroSection = () => {
             </Button>
           </a>
           
-          <a href="/Escalo-Carls_Resume.pdf" target="_blank" rel="noopener noreferrer">
+          <a href="/Escalo-CarlsDale_Resume.pdf" target="_blank" rel="noopener noreferrer">
             <Button
               className="px-8 py-3 rounded-sm font-semibold transition-all flex items-center hover:opacity-80"
               style={{
