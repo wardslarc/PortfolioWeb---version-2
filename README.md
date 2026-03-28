@@ -1,207 +1,146 @@
-# carlsdaleescalo.com 🌐
+# Portfolio Monorepo
 
-[![Website](https://img.shields.io/badge/Website-Live-brightgreen)](https://carlsdaleescalo.com)
-[![License](https://img.shields.io/badge/License-Personal-blue)](https://github.com/yourusername/carlsdaleescalo.com)
-[![Built With React](https://img.shields.io/badge/Built%20With-React-blue?logo=react)](https://reactjs.org)
-[![Vite](https://img.shields.io/badge/Dev-Setup%20Vite-red)](https://vitejs.dev)
-[![MongoDB](https://img.shields.io/badge/Database-MongoDB-green?logo=mongodb)](https://www.mongodb.com/)
+Monorepo for Carls Dale Escalo's portfolio and contact backend. The repository is organized for separate Vercel deployments:
 
-> Personal portfolio website of Carls Dale Escalo, showcasing web projects, digital artwork, technical skills, and a way to get in touch.
+- `apps/web`: Next.js portfolio frontend
+- `apps/api`: Vercel serverless backend for the contact form
 
----
+## Stack
 
-## 📸 Live Demo
+- npm workspaces
+- Next.js App Router
+- React 18
+- TypeScript
+- Tailwind CSS
+- Framer Motion
+- Vercel Functions
+- Express
+- MongoDB
 
-Check out the website here: [https://carlsdaleescalo.com](https://carlsdaleescalo.com)
+## Repository Layout
 
-**Landing Page:**  
-![Landing Page](./assets/landing.png)
+```text
+apps/
+  api/
+    api/index.ts       # Vercel entrypoint for the Express app
+    src/app.ts         # Express app and routes
+    src/lib/mongodb.ts # MongoDB connection helper
+    package.json
+    tsconfig.json
+    vercel.json
 
-**Portfolio Section:**  
-![Portfolio](./assets/webprojects.png)
+  web/
+    app/               # Next.js App Router entrypoints
+    public/            # Static assets
+    src/               # Components, context, helpers
+    package.json
+    next.config.js
+    tailwind.config.js
+    tsconfig.json
 
-**Art Gallery:**  
-![Art Gallery](./assets/artgallery.png)
-
-**Contact Form:**  
-![Contact Form](./assets/getintouch.png)
-
----
-
-## 🏗️ Features
-
-- **🌅 Dynamic Time-Based Theming:** The portfolio automatically detects your local time and applies contextual backgrounds:
-  - 🌄 **Morning** (5 AM - 12 PM) - Bright, energetic theme
-  - ☀️ **Afternoon** (12 PM - 6 PM) - Warm, professional theme
-  - 🌙 **Night** (6 PM - 5 AM) - Elegant, dark theme
-  - Manual override available for instant theme switching and testing
-
-- **Landing Page:** Clean, interactive introduction with animated gradient text and real-time responsive design.
-
-- **Portfolio:** Showcase of web projects with detailed descriptions, links, and modal previews.
-
-- **Skills & Technologies:** Comprehensive display of technical expertise and tools used.
-
-- **Art Gallery:** Interactive digital art exhibition with smooth carousel and modal views.
-
-- **Smart Assistant:** Integrated chatbot for enhanced user interaction and support.
-
-- **Get in Touch:**
-  - Contact form connected to **MongoDB**
-  - Real-time input validation
-  - Secure form submissions
-  - Automated confirmation emails
-  - Owner notifications for new inquiries
-
-- **Performance Optimized:** Vite-powered fast development and production builds with lazy loading and SEO optimization.
-
----
-
-## 🛠️ Technologies Used
-
-**Frontend:**
-- React 18 with Hooks and Context API
-- TypeScript for type safety
-- Vite for lightning-fast builds
-- Tailwind CSS for responsive design
-- Framer Motion for smooth animations
-- Lucide React for beautiful icons
-
-**Backend/API:**
-- Node.js with Express.js
-- RESTful API architecture
-
-**Database:**
-- MongoDB for data persistence
-- Secure credential management
-
-**Features & Tools:**
-- NodeMailer for email notifications
-- Real-time form validation
-- Context API for global state management
-- SEO utilities for metadata and schema markup
-- Security utilities for XSS prevention and sanitization
-
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-- Node.js (v16 or higher)
-- npm or yarn package manager
-
-### Installation
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/wardslarc/carlsdaleescalo.com.git
-   cd carlsdaleescalo.com
-   ```
-
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-
-3. **Set up environment variables:**
-   Create a `.env.local` file in the root directory:
-   ```
-   VITE_API_URL=your_api_endpoint
-   VITE_MONGODB_URI=your_mongodb_connection_string
-   ```
-
-4. **Start the development server:**
-   ```bash
-   npm run dev
-   ```
-
-5. **Build for production:**
-   ```bash
-   npm run build
-   ```
-
----
-
-## ✨ Key Features Explained
-
-### Dynamic Theme System
-The portfolio features an intelligent theming system that automatically adapts to the user's local time:
-
-- **Automatic Detection:** Uses JavaScript's `getHours()` to detect the current time
-- **React Context API:** Global state management ensures theme consistency across all components
-- **Manual Override:** Users can manually switch themes via the options menu (Sparkles button)
-- **Persistent State:** Manual selections persist throughout the browsing session
-
-### Smart Conversation Assistant
-An integrated chatbot providing:
-- Real-time user assistance
-- Natural language interaction
-- Seamless integration with the options menu
-
-### Security & Performance
-- XSS prevention utilities
-- Input sanitization
-- SEO-optimized metadata
-- Lazy loading for images and components
-
----
-
-## 📁 Project Structure
-
-```
-src/
-├── components/
-│   ├── HeroSection.tsx          # Main landing with dynamic backgrounds
-│   ├── ChatBot.tsx              # AI assistant with options menu
-│   ├── ProjectsSection.tsx      # Portfolio projects showcase
-│   ├── SkillsSection.tsx        # Technical skills display
-│   ├── ArtSection.tsx           # Digital art gallery
-│   ├── ContactSection.tsx       # Contact form
-│   └── ui/                      # Reusable UI components
-├── context/
-│   └── ThemeContext.tsx         # Global theme state management
-├── lib/
-│   ├── security.ts              # Security utilities
-│   └── utils.ts                 # Helper functions
-├── utils/
-│   └── seoUtils.ts              # SEO optimization utilities
-└── App.tsx                      # Main application component
+assets/                # README screenshots
+package.json           # Workspace scripts
+.env.example           # Shared deployment env reference
 ```
 
----
+## Workspace Scripts
 
-## 🔧 Configuration
+Install all dependencies from the repo root:
 
-### Theme Configuration
-Theme settings are defined in `HeroSection.tsx`:
-- Morning: 5 AM - 11:59 AM
-- Afternoon: 12 PM - 5:59 PM
-- Night: 6 PM - 4:59 AM
+```bash
+npm install
+```
 
-### Tailwind CSS
-Custom Tailwind configuration in `tailwind.config.js` for design consistency.
+Run the frontend:
 
----
+```bash
+npm run dev:web
+```
 
-## 📝 Contributing
+Run the backend locally with Vercel dev:
 
-Contributions are welcome! Please feel free to submit pull requests or open issues for any improvements.
+```bash
+npm run dev:api
+```
 
----
+Build both apps:
 
-## 📄 License
+```bash
+npm run build
+```
 
-This project is personal and proprietary. Please respect the copyright notice.
+Build only the frontend:
 
----
+```bash
+npm run build:web
+```
 
-## 🤝 Connect
+Build only the API typecheck:
 
-- **Website:** [carlsdaleescalo.com](https://carlsdaleescalo.com)
-- **GitHub:** [@wardslarc](https://github.com/wardslarc)
-- **LinkedIn:** [Carls Dale Escalo](https://www.linkedin.com/in/carls-dale-escalo-797701366/)
-- **Twitter:** [@daleonigiri](https://x.com/daleonigiri)
+```bash
+npm run build:api
+```
 
----
+## Environment Variables
 
-**Made with ❤️ by Carls Dale Escalo**
+Copy `.env.example` and configure the values for your environment.
+
+### Frontend
+
+- `NEXT_PUBLIC_CONTACT_API_URL`
+  The full backend URL used by the contact form.
+  Example:
+  `https://your-api-project.vercel.app/api/contact`
+
+### Backend
+
+- `ALLOWED_ORIGINS`
+  Comma-separated list of allowed frontend origins
+- `WEB_ORIGIN`
+  Optional single-origin fallback
+- `MONGODB_URI`
+  MongoDB connection string
+- `MONGODB_DB_NAME`
+  Database name for the portfolio backend
+- `CONTACT_COLLECTION`
+  Optional collection name for contact submissions
+- `CONTACT_ALLOWED_PRODUCTION_ORIGINS`
+  Allowed production browser origins. Defaults to `https://carlsdaleescalo.com,https://www.carlsdaleescalo.com`
+- `CONTACT_MIN_SUBMISSION_AGE_MS`
+  Minimum age for a browser-started submission before the backend accepts it
+- `CONTACT_MAX_SUBMISSION_AGE_MS`
+  Maximum accepted age for a submission timestamp
+- `CONTACT_DUPLICATE_WINDOW_MS`
+  Time window for rejecting repeated identical messages
+
+## Contact Form Flow
+
+1. The frontend form in `apps/web` validates input, keeps a hidden honeypot field, and sends a client-side start timestamp with each submission.
+2. The backend Express endpoint validates input again, enforces production origin restrictions, rejects bot-like timing, rate limits by client IP, blocks recent duplicates, and stores accepted submissions in MongoDB.
+3. The frontend displays success or retry feedback based on the API response.
+
+## Vercel Deployment
+
+Deploy the apps as two separate Vercel projects from the same monorepo:
+
+### Web Project
+
+- Root directory: `apps/web`
+- Framework preset: Next.js
+- Environment variable:
+  `NEXT_PUBLIC_CONTACT_API_URL=https://your-api-project.vercel.app/api/contact`
+
+### API Project
+
+- Root directory: `apps/api`
+- Framework preset: Other
+- Vercel will use `vercel.json` and the `api/index.ts` Express entrypoint
+- Set these environment variables:
+  `ALLOWED_ORIGINS`, `WEB_ORIGIN`, `MONGODB_URI`, `MONGODB_DB_NAME`, `CONTACT_COLLECTION`
+
+## Notes
+
+- The repo is already disconnected from the previous Git remote.
+- `apps/web` is the production frontend.
+- `apps/api` is ready for Vercel serverless deployment.
+- The web build still skips lint during production builds because of legacy story/demo files under `apps/web/src/stories/`.

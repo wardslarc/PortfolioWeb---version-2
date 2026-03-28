@@ -8,6 +8,10 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+.next
+.vercel
+apps/*/.next
+apps/*/.vercel
 dist
 dist-ssr
 *.local
@@ -32,3 +36,8 @@ core
 
 .github/
 
+.env
+.env.*
+!.env.example
+apps/*/.env
+apps/*/.env.*
