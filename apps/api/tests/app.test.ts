@@ -3,9 +3,11 @@ import assert from "node:assert/strict";
 import request from "supertest";
 import { createApp } from "../src/app";
 import { env } from "../src/config/env";
+import { issueContactToken } from "../src/lib/contactSecurity";
 import type { ContactRepository, ContactSubmission } from "../src/modules/contact/types";
 
 const ORIGINAL_ENV = { ...env };
+const PROXY_SECRET_HEADER = "x-contact-proxy-secret";
 
 const createRepositoryDouble = () => {
   const submissions: ContactSubmission[] = [];
@@ -30,9 +32,26 @@ const validPayload = (timestamp = Date.now() - 3000) => ({
   email: "test@example.com",
   subject: "Testing contact route",
   message: "This message should be accepted and stored safely.",
+  contactToken: issueContactToken({
+    origin: "http://localhost:3000",
+    ttlMs: env.CONTACT_TOKEN_TTL_MS,
+  }).token,
   honeypot: "",
   timestamp,
 });
+
+const postContact = (app: ReturnType<typeof createApp>) => {
+  const requestBuilder = request(app)
+    .post("/api/contact")
+    .set("Origin", "http://localhost:3000")
+    .set("Content-Type", "application/json");
+
+  if (env.CONTACT_PROXY_SHARED_SECRET) {
+    requestBuilder.set(PROXY_SECRET_HEADER, env.CONTACT_PROXY_SHARED_SECRET);
+  }
+
+  return requestBuilder;
+};
 
 afterEach(() => {
   Object.assign(env, ORIGINAL_ENV);
@@ -52,10 +71,7 @@ test("POST /api/contact stores a valid submission", async () => {
   const { repository, submissions } = createRepositoryDouble();
   const app = createApp(repository);
 
-  const response = await request(app)
-    .post("/api/contact")
-    .set("Content-Type", "application/json")
-    .send(validPayload());
+  const response = await postContact(app).send(validPayload());
 
   assert.equal(response.status, 201);
   assert.equal(response.body.success, true);
@@ -69,14 +85,12 @@ test("POST /api/contact rejects invalid payloads", async () => {
   const { repository } = createRepositoryDouble();
   const app = createApp(repository);
 
-  const response = await request(app)
-    .post("/api/contact")
-    .set("Content-Type", "application/json")
-    .send({
+  const response = await postContact(app).send({
       name: "A",
       email: "not-an-email",
       subject: "bad",
       message: "short",
+      contactToken: "invalid-token",
       honeypot: "",
       timestamp: Date.now() - 3000,
     });
@@ -91,6 +105,7 @@ test("POST /api/contact requires application/json", async () => {
 
   const response = await request(app)
     .post("/api/contact")
+    .set(PROXY_SECRET_HEADER, env.CONTACT_PROXY_SHARED_SECRET || "")
     .type("form")
     .send({
       name: "Test User",
@@ -109,10 +124,7 @@ test("POST /api/contact rejects submissions that arrive too quickly", async () =
   const { repository } = createRepositoryDouble();
   const app = createApp(repository);
 
-  const response = await request(app)
-    .post("/api/contact")
-    .set("Content-Type", "application/json")
-    .send(validPayload(Date.now() - 200));
+  const response = await postContact(app).send(validPayload(Date.now() - 200));
 
   assert.equal(response.status, 400);
   assert.equal(response.body.error, "Unable to verify submission timing.");
@@ -122,18 +134,12 @@ test("POST /api/contact rejects recent duplicate submissions", async () => {
   const { repository, duplicateFingerprints } = createRepositoryDouble();
   const app = createApp(repository);
   const payload = validPayload();
-  const firstResponse = await request(app)
-    .post("/api/contact")
-    .set("Content-Type", "application/json")
-    .send(payload);
+  const firstResponse = await postContact(app).send(payload);
 
   assert.equal(firstResponse.status, 201);
   assert.equal(duplicateFingerprints.size, 1);
 
-  const duplicateResponse = await request(app)
-    .post("/api/contact")
-    .set("Content-Type", "application/json")
-    .send(payload);
+  const duplicateResponse = await postContact(app).send(payload);
 
   assert.equal(duplicateResponse.status, 429);
   assert.match(duplicateResponse.body.error, /similar message/i);
@@ -150,6 +156,7 @@ test("POST /api/contact rejects untrusted origins in production", async () => {
     .post("/api/contact")
     .set("Origin", "https://evil.example")
     .set("Content-Type", "application/json")
+    .set(PROXY_SECRET_HEADER, env.CONTACT_PROXY_SHARED_SECRET || "")
     .send(validPayload());
 
   assert.equal(response.status, 403);
@@ -157,4 +164,31 @@ test("POST /api/contact rejects untrusted origins in production", async () => {
     response.body.error,
     "This form can only be submitted from carlsdaleescalo.com.",
   );
+});
+
+test("POST /api/contact rejects invalid contact tokens", async () => {
+  const { repository } = createRepositoryDouble();
+  const app = createApp(repository);
+
+  const response = await postContact(app).send({
+      ...validPayload(),
+      contactToken: `${"x".repeat(64)}.${"y".repeat(64)}`,
+    });
+
+  assert.equal(response.status, 400);
+  assert.equal(response.body.error, "Unable to verify contact form session.");
+});
+
+test("POST /api/contact rejects spam-like submissions", async () => {
+  const { repository } = createRepositoryDouble();
+  const app = createApp(repository);
+
+  const response = await postContact(app).send({
+      ...validPayload(),
+      subject: "Visit www.spam.example now",
+      message: "Buy buy buy buy buy buy buy buy now at www.spam.example",
+    });
+
+  assert.equal(response.status, 400);
+  assert.match(response.body.error, /automated or repetitive/i);
 });

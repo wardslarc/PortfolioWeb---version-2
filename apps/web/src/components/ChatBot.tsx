@@ -25,7 +25,6 @@ import {
   ExternalLink,
   Book,
   Code,
-  Palette,
   Briefcase,
   HelpCircle,
 } from "lucide-react";
@@ -209,40 +208,7 @@ const ChatBotIcon = () => {
       ],
       confidence: 0.85,
       relatedSections: ["Contact"],
-    },
-    {
-      keywords: [
-        "art",
-        "design",
-        "creative",
-        "illustration",
-        "digital art",
-        "graphic",
-        "drawing",
-        "painting",
-        "artwork",
-        "creative work",
-        "visual",
-        "design work",
-      ],
-      responses: [
-        "Beyond coding, Carl has artistic skills! The Art section showcases digital illustrations and creative works that complement his technical abilities.",
-        "Carl enjoys digital art and design as a creative outlet. You can view his artwork in the Art section of this portfolio.",
-        "Check out the Art section for Carl's creative projects, including digital illustrations and design work.",
-        "Carl creates digital artwork alongside his development projects. You can see examples in the Art section above.",
-      ],
-      context: [
-        "creative",
-        "visual",
-        "artistic",
-        "design",
-        "show",
-        "see",
-        "example",
-      ],
-      confidence: 0.8,
-      relatedSections: ["Art"],
-    },
+    },
     {
       keywords: [
         "resume",
@@ -286,8 +252,8 @@ const ChatBotIcon = () => {
         "who is",
       ],
       responses: [
-        "Carl is a full-stack developer with a passion for creating beautiful, functional web applications and digital art. Explore the Hero section for more!",
-        "Carl is a developer based in the Philippines who loves solving problems with code and creating digital art. Check the Hero section for his introduction.",
+        "Carl is a full-stack developer with a passion for creating beautiful, functional web applications. Explore the Hero section for more!",
+        "Carl is a developer based in the Philippines who loves solving problems with code and building polished digital experiences. Check the Hero section for his introduction.",
         "Learn more about Carl in the Hero section at the top of this portfolio.",
         "Carl combines technical skills with creative design. You can learn more about him in the Hero section above.",
       ],
@@ -315,10 +281,10 @@ const ChatBotIcon = () => {
         "sup",
       ],
       responses: [
-        "👋 Hello! I'm Carl's AI assistant. I can help you explore his portfolio, discuss his projects, skills, artwork, or help you get in touch. What would you like to know?",
-        "Hi there! Welcome to Carl's portfolio. I can tell you about his work, skills, art, or help you connect with him. How can I assist you today?",
+        "👋 Hello! I'm Carl's AI assistant. I can help you explore his portfolio, discuss his projects, skills, or help you get in touch. What would you like to know?",
+        "Hi there! Welcome to Carl's portfolio. I can tell you about his work, skills, or help you connect with him. How can I assist you today?",
         "Hey! I'm here to help you navigate Carl's portfolio. Feel free to ask about anything you see here!",
-        "Hello! Welcome to Carl's portfolio. I can help you explore his projects, skills, artwork, or help you get in touch with him.",
+        "Hello! Welcome to Carl's portfolio. I can help you explore his projects, skills, or help you get in touch with him.",
       ],
       context: ["greeting", "welcome", "introduction", "start"],
       confidence: 1.0,
@@ -369,9 +335,9 @@ const ChatBotIcon = () => {
         "can you help",
       ],
       responses: [
-        "I can help you with: • Information about Carl's background • Projects and portfolio • Technical skills • Artwork • Contact information",
-        "I'm here to assist you with: Exploring Carl's background, projects, skills, artwork, and contact details. What would you like to know?",
-        "I can provide information about: Carl's story and background, projects, skills, artwork, and how to get in touch.",
+        "I can help you with: • Information about Carl's background • Projects and portfolio • Technical skills • Contact information",
+        "I'm here to assist you with: Exploring Carl's background, projects, skills, and contact details. What would you like to know?",
+        "I can provide information about: Carl's story and background, projects, skills, and how to get in touch.",
         "I can help you explore Carl's entire portfolio: Background, projects, skills, creative work, and contact information. What interests you?",
       ],
       context: ["assistance", "help", "support", "guide", "what"],
@@ -390,8 +356,8 @@ const ChatBotIcon = () => {
       responses: [
         "I'm an AI assistant for Carl's portfolio website. I can help you explore his work, skills, and projects. Ask me anything about his portfolio!",
         "I'm Carl's portfolio assistant - an AI designed to help visitors learn about his work, skills, and projects. How can I help you today?",
-        "I'm the AI assistant for this portfolio. I can tell you about Carl's projects, technical skills, artwork, and how to contact him.",
-        "I'm here to help you navigate Carl's portfolio. I can answer questions about his work, skills, art, and contact information.",
+        "I'm the AI assistant for this portfolio. I can tell you about Carl's projects, technical skills, and how to contact him.",
+        "I'm here to help you navigate Carl's portfolio. I can answer questions about his work, skills, and contact information.",
       ],
       context: ["ai", "assistant", "what", "who", "introduce"],
       confidence: 0.95,
@@ -425,7 +391,7 @@ const ChatBotIcon = () => {
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
     {
       id: 1,
-      text: "👋 Hello! I'm Carl's AI assistant. I can help you explore his portfolio, discuss his projects, skills, artwork, or help you get in touch. What would you like to know?",
+      text: "👋 Hello! I'm Carl's AI assistant. I can help you explore his portfolio, discuss his projects, skills, or help you get in touch. What would you like to know?",
       isBot: true,
       time: new Date().toLocaleTimeString([], {
         hour: "2-digit",
@@ -436,7 +402,7 @@ const ChatBotIcon = () => {
     },
     {
       id: 2,
-      text: "💡 **Quick suggestions:** Try asking about 'projects', 'skills', 'contact info', or 'artwork'!",
+      text: "💡 **Quick suggestions:** Try asking about 'projects', 'skills', or 'contact info'!",
       isBot: true,
       time: new Date().toLocaleTimeString([], {
         hour: "2-digit",
@@ -447,7 +413,7 @@ const ChatBotIcon = () => {
         "Tell me about projects",
         "What are Carl's skills?",
         "How to contact?",
-        "Show art examples",
+        "Tell me about Carl",
       ],
       confidence: 1.0,
     },
@@ -537,8 +503,6 @@ const ChatBotIcon = () => {
       project: "project",
       skills: "skill",
       skill: "skill",
-      art: "art",
-      artwork: "art",
       contact: "contact",
       about: "about",
       help: "help",
@@ -579,7 +543,7 @@ const ChatBotIcon = () => {
     if (isOutOfScope) {
       const result = {
         response:
-          "I'm focused on helping you explore Carl's portfolio. I can't provide information about that topic. Would you like to know about Carl's projects, skills, or artwork instead?",
+          "I'm focused on helping you explore Carl's portfolio. I can't provide information about that topic. Would you like to know about Carl's projects, skills, or contact details instead?",
         confidence: 0.1,
         isOutOfScope: true,
       };
@@ -633,7 +597,7 @@ const ChatBotIcon = () => {
       // Needs clarification response
       const clarificationResponses = [
         "I'm here to provide factual information about Carl's portfolio. Could you rephrase your question or ask about something specific from his work?",
-        "To help you better, could you ask about Carl's projects, technical skills, artwork, or how to contact him?",
+        "To help you better, could you ask about Carl's projects, technical skills, or how to contact him?",
         "I can help with questions about Carl's work. Could you be more specific about what you'd like to know?",
       ];
 
@@ -650,9 +614,9 @@ const ChatBotIcon = () => {
     } else {
       // No good match found - use fallback
       const fallbackResponses = [
-        "I can help you explore Carl's portfolio. Try asking about his projects, skills, artwork, or how to contact him.",
+        "I can help you explore Carl's portfolio. Try asking about his projects, skills, or how to contact him.",
         "I'm here to discuss Carl's work. What would you like to know about his projects, skills, or creative work?",
-        "Feel free to ask about Carl's projects, technical skills, digital artwork, or contact information.",
+        "Feel free to ask about Carl's projects, technical skills, or contact information.",
       ];
 
       const result = {
@@ -746,7 +710,7 @@ const ChatBotIcon = () => {
             minute: "2-digit",
           }),
           isSuggestion: true,
-          suggestions: ["Projects", "Skills", "Artwork", "Contact"],
+          suggestions: ["Projects", "Skills", "About", "Contact"],
         };
         setChatMessages((prev) => [...prev, botResponse, followUpMessage]);
       } else if (
@@ -829,7 +793,7 @@ const ChatBotIcon = () => {
     setChatMessages([
       {
         id: 1,
-        text: "👋 Hello! I'm Carl's AI assistant. I can help you explore his portfolio, discuss his projects, skills, artwork, or help you get in touch. What would you like to know?",
+        text: "👋 Hello! I'm Carl's AI assistant. I can help you explore his portfolio, discuss his projects, skills, or help you get in touch. What would you like to know?",
         isBot: true,
         time: new Date().toLocaleTimeString([], {
           hour: "2-digit",
@@ -840,7 +804,7 @@ const ChatBotIcon = () => {
       },
       {
         id: 2,
-        text: "💡 **Quick suggestions:** Try asking about 'projects', 'skills', 'contact info', or 'artwork'!",
+        text: "💡 **Quick suggestions:** Try asking about 'projects', 'skills', or 'contact info'!",
         isBot: true,
         time: new Date().toLocaleTimeString([], {
           hour: "2-digit",
@@ -851,7 +815,7 @@ const ChatBotIcon = () => {
           "Tell me about you",
           "What are Carl's projects?",
           "How to contact?",
-          "Show art examples",
+          "Tell me about Carl",
         ],
         confidence: 1.0,
       },
@@ -1266,7 +1230,7 @@ const ChatBotIcon = () => {
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    placeholder="Ask about projects, skills, artwork, or contact..."
+                    placeholder="Ask about projects, skills, or contact..."
                     className="w-full min-h-[44px] max-h-32 px-4 py-3 pr-24 bg-gray-50 rounded-xl text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none border border-gray-200"
                     rows={1}
                   />
@@ -1331,3 +1295,5 @@ const ChatBotIcon = () => {
 };
 
 export default ChatBotIcon;
+
+

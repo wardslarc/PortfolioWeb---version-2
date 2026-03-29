@@ -68,6 +68,34 @@ const CareerEducationSection = () => {
 
   const careerData = [
     {
+      title: "Systems Developer",
+      company: "Rustan Marketing Corporation",
+      period: "Feb 18 2026 - Present",
+      location: "Makati, Philippines",
+      description: "Developing internal business systems and company websites, with a current focus on building a company LMS.",
+      logo: "/rustan.png",
+      achievements: [
+        "Spearheaded the development of internal tools and websites for the company",
+        "Currently building a learning management system (LMS) tailored for company use",
+      ],
+      technologies: [
+        "Next.js",
+        "TypeScript",
+        "MySQL",
+        "Docker",
+        "Nginx",
+        "Python",
+        "PyGUI",
+        "React.js",
+        "Electron",
+        "GCP",
+        "Node.js",
+        "Express",
+        "Tailwind CSS",
+      ],
+      type: "career",
+    },
+    {
       title: "IT Staff / Web Developer",
       company: "Citimax Group Inc.",
       period: "Oct 2023 - Nov 2025",
@@ -185,7 +213,7 @@ const CareerEducationSection = () => {
                   variants={cardVariants}
                   whileHover="hover"
                   className="relative overflow-visible bg-white rounded-lg p-5 border-2 border-gray-300 hover:border-blue-500 transition-all shadow-md cursor-pointer"
-                  onMouseEnter={() => setHoveredWebsite(item.website)}
+                  onMouseEnter={() => setHoveredWebsite(item.website || null)}
                   onMouseLeave={() => setHoveredWebsite(null)}
                 >
                   <div className="flex items-start justify-between mb-2">
@@ -244,7 +272,7 @@ const CareerEducationSection = () => {
                   )}
 
                   {/* Website Preview Window */}
-                  {hoveredWebsite === item.website && (
+                  {item.website && hoveredWebsite === item.website && (
                     <motion.div
                       initial={{ opacity: 0, scale: 0.95, y: 10 }}
                       animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -314,7 +342,7 @@ const CareerEducationSection = () => {
                   variants={cardVariants}
                   whileHover="hover"
                   className="relative overflow-visible bg-white rounded-lg p-5 border-2 border-gray-300 hover:border-purple-500 transition-all shadow-md cursor-pointer"
-                  onMouseEnter={() => setHoveredWebsite(item.website)}
+                  onMouseEnter={() => setHoveredWebsite(item.website || null)}
                   onMouseLeave={() => setHoveredWebsite(null)}
                 >
                   <div className="flex items-start justify-between mb-2">
@@ -349,7 +377,7 @@ const CareerEducationSection = () => {
                   <p className="text-gray-700">{item.description}</p>
 
                   {/* Website Preview Window */}
-                  {hoveredWebsite === item.website && (
+                  {item.website && hoveredWebsite === item.website && (
                     <motion.div
                       initial={{ opacity: 0, scale: 0.95, y: 10 }}
                       animate={{ opacity: 1, scale: 1, y: 0 }}

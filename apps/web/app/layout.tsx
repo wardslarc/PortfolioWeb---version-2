@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Carls Dale Escalo | Full Stack Developer",
     description:
-      "Portfolio of Carls Dale Escalo featuring projects, artwork, and contact information.",
+      "Portfolio of Carls Dale Escalo featuring selected projects, technical experience, and contact information.",
     images: ["/portfolio.png"],
   },
   icons: {

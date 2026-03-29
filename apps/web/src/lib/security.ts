@@ -176,88 +176,6 @@ export const isEmailSafe = (email: string | null | undefined): boolean => {
 };
 
 /**
- * Content Security Policy configuration
- * These headers help prevent XSS, clickjacking, and other injection attacks
- */
-export const CSP_HEADERS = {
-  // Strict CSP that only allows same-origin resources
-  strict: {
-    "Content-Security-Policy":
-      "default-src 'self'; " +
-      "script-src 'self' 'wasm-unsafe-eval'; " +
-      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
-      "font-src 'self' https://fonts.gstatic.com; " +
-      "img-src 'self' data: https:; " +
-      "connect-src 'self'; " +
-      "frame-ancestors 'none'; " +
-      "base-uri 'self'; " +
-      "form-action 'self'",
-  },
-
-  // Moderate CSP with some external sources
-  moderate: {
-    "Content-Security-Policy":
-      "default-src 'self'; " +
-      "script-src 'self' 'wasm-unsafe-eval'; " +
-      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
-      "font-src 'self' https://fonts.gstatic.com; " +
-      "img-src 'self' data: https:; " +
-      "connect-src 'self' https:; " +
-      "frame-ancestors 'none'; " +
-      "base-uri 'self'; " +
-      "form-action 'self'",
-  },
-};
-
-/**
- * Additional security headers to prevent common attacks
- */
-export const SECURITY_HEADERS = {
-  // Prevent clickjacking attacks
-  "X-Frame-Options": "DENY",
-
-  // Enable MIME type sniffing protection
-  "X-Content-Type-Options": "nosniff",
-
-  // Enable XSS protection in older browsers
-  "X-XSS-Protection": "1; mode=block",
-
-  // Referrer policy for privacy
-  "Referrer-Policy": "strict-origin-when-cross-origin",
-
-  // Force HTTPS in browsers that support it
-  "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
-
-  // Permissions policy (formerly Feature Policy)
-  "Permissions-Policy":
-    "accelerometer=(), " +
-    "ambient-light-sensor=(), " +
-    "autoplay=(), " +
-    "battery=(), " +
-    "camera=(), " +
-    "cross-origin-isolated=(), " +
-    "display-capture=(), " +
-    "document-domain=(), " +
-    "encrypted-media=(), " +
-    "execution-while-not-rendered=(), " +
-    "execution-while-out-of-viewport=(), " +
-    "fullscreen=(), " +
-    "geolocation=(), " +
-    "gyroscope=(), " +
-    "magnetometer=(), " +
-    "microphone=(), " +
-    "midi=(), " +
-    "navigation-override=(), " +
-    "payment=(), " +
-    "picture-in-picture=(), " +
-    "publickey-credentials-get=(), " +
-    "speaker-selection=(), " +
-    "sync-xhr=(), " +
-    "usb=(), " +
-    "xr-spatial-tracking=()",
-};
-
-/**
  * Validates user input for chat messages
  * Combines multiple security checks
  * 
@@ -328,18 +246,4 @@ export const isContentSafe = (content: string | null | undefined): boolean => {
   ];
 
   return !dangerousPatterns.some((pattern) => pattern.test(contentString));
-};
-
-/**
- * Generate a Content Security Policy nonce for inline scripts
- * Use this if you need inline scripts (not recommended)
- * 
- * @returns Random nonce string
- */
-export const generateCSPNonce = (): string => {
-  const array = new Uint8Array(16);
-  crypto.getRandomValues(array);
-  return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join(
-    ""
-  );
 };

@@ -28,11 +28,8 @@ import {
 } from "./ui/card";
 import { Alert, AlertDescription } from "./ui/alert";
 
-const API_URL =
-  process.env.NEXT_PUBLIC_CONTACT_API_URL ||
-  (process.env.NODE_ENV === "development"
-    ? "http://localhost:3001/api/contact"
-    : "/api/contact");
+const API_URL = "/api/contact";
+const REQUEST_TIMEOUT_MS = 15000;
 
 const formSchema = z.object({
   name: z.string().trim().min(2, "Name must be at least 2 characters"),
@@ -60,31 +57,98 @@ const ContactSection = () => {
   const { manualTimePeriod } = useTheme();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isPreparingForm, setIsPreparingForm] = useState(true);
   const [submissionStage, setSubmissionStage] = useState<SubmissionStage>("idle");
   const [submissionError, setSubmissionError] = useState("");
+  const [contactToken, setContactToken] = useState("");
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: createDefaultValues(),
   });
 
-  useEffect(() => {
-    // Refresh the client-side start time after hydration so the backend can
-    // reject unrealistically fast bot submissions without blocking real users.
-    form.setValue("timestamp", Date.now(), {
-      shouldDirty: false,
-      shouldTouch: false,
-      shouldValidate: false,
-    });
-  }, [form]);
+  const refreshContactSession = async () => {
+    setIsPreparingForm(true);
 
-  const resetTimestamp = () => {
-    form.setValue("timestamp", Date.now(), {
-      shouldDirty: false,
-      shouldTouch: false,
-      shouldValidate: false,
-    });
+    try {
+      const response = await fetch(API_URL, {
+        method: "GET",
+        cache: "no-store",
+        headers: {
+          Accept: "application/json",
+        },
+      });
+
+      const responseBody = await response.json().catch(() => null);
+
+      if (!response.ok || !responseBody?.token || typeof responseBody?.issuedAt !== "number") {
+        throw new Error("Contact form is not ready yet. Please refresh and try again.");
+      }
+
+      setContactToken(responseBody.token);
+      form.setValue("timestamp", responseBody.issuedAt, {
+        shouldDirty: false,
+        shouldTouch: false,
+        shouldValidate: false,
+      });
+    } finally {
+      setIsPreparingForm(false);
+    }
   };
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const prepareContactSession = async () => {
+      setSubmissionError("");
+
+      try {
+        const response = await fetch(API_URL, {
+          method: "GET",
+          cache: "no-store",
+          headers: {
+            Accept: "application/json",
+          },
+        });
+
+        const responseBody = await response.json().catch(() => null);
+
+        if (!response.ok || !responseBody?.token || typeof responseBody?.issuedAt !== "number") {
+          throw new Error("Contact form is not ready yet. Please refresh and try again.");
+        }
+
+        if (cancelled) {
+          return;
+        }
+
+        setContactToken(responseBody.token);
+        form.setValue("timestamp", responseBody.issuedAt, {
+          shouldDirty: false,
+          shouldTouch: false,
+          shouldValidate: false,
+        });
+      } catch (error) {
+        if (!cancelled) {
+          setContactToken("");
+          setSubmissionError(
+            error instanceof Error
+              ? error.message
+              : "Contact form is not ready yet. Please refresh and try again.",
+          );
+        }
+      } finally {
+        if (!cancelled) {
+          setIsPreparingForm(false);
+        }
+      }
+    };
+
+    void prepareContactSession();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [form]);
 
   const getTimePeriod = () => {
     if (manualTimePeriod) return manualTimePeriod;
@@ -117,7 +181,19 @@ const ContactSection = () => {
       return;
     }
 
+    if (!contactToken) {
+      setSubmissionStage("error");
+      setSubmissionError("Contact form verification is still loading. Please try again.");
+      setIsSubmitting(false);
+      return;
+    }
+
     setSubmissionStage("sending");
+
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => {
+      controller.abort();
+    }, REQUEST_TIMEOUT_MS);
 
     try {
       const response = await fetch(API_URL, {
@@ -125,8 +201,10 @@ const ContactSection = () => {
         headers: {
           "Content-Type": "application/json",
         },
+        signal: controller.signal,
         body: JSON.stringify({
           ...data,
+          contactToken,
           timestamp: data.timestamp,
         }),
       });
@@ -145,12 +223,20 @@ const ContactSection = () => {
     } catch (error) {
       setSubmissionStage("error");
       setSubmissionError(
-        error instanceof Error
+        error instanceof DOMException && error.name === "AbortError"
+          ? "The request took too long. Please try again."
+          : error instanceof Error
           ? error.message
           : "There was an error submitting your message. Please try again later.",
       );
-      resetTimestamp();
+
+      try {
+        await refreshContactSession();
+      } catch {
+        setContactToken("");
+      }
     } finally {
+      window.clearTimeout(timeoutId);
       setIsSubmitting(false);
     }
   };
@@ -160,6 +246,9 @@ const ContactSection = () => {
     setSubmissionStage("idle");
     setSubmissionError("");
     form.reset(createDefaultValues());
+    void refreshContactSession().catch(() => {
+      setContactToken("");
+    });
   };
 
   const getStageMessage = (stage: SubmissionStage): string => {
@@ -319,7 +408,7 @@ const ContactSection = () => {
                                     autoComplete="name"
                                     {...field}
                                     className="border-white/30 bg-white/20 text-white placeholder:text-white/60"
-                                    disabled={isSubmitting}
+                                    disabled={isSubmitting || isPreparingForm}
                                   />
                                 </FormControl>
                                 <FormMessage className="text-white/80" />
@@ -340,7 +429,7 @@ const ContactSection = () => {
                                     inputMode="email"
                                     {...field}
                                     className="border-white/30 bg-white/20 text-white placeholder:text-white/60"
-                                    disabled={isSubmitting}
+                                    disabled={isSubmitting || isPreparingForm}
                                   />
                                 </FormControl>
                                 <FormMessage className="text-white/80" />
@@ -361,7 +450,7 @@ const ContactSection = () => {
                                   autoComplete="off"
                                   {...field}
                                   className="border-white/30 bg-white/20 text-white placeholder:text-white/60"
-                                  disabled={isSubmitting}
+                                  disabled={isSubmitting || isPreparingForm}
                                 />
                               </FormControl>
                               <FormMessage className="text-white/80" />
@@ -380,7 +469,7 @@ const ContactSection = () => {
                                   placeholder="Write your message here..."
                                   className="min-h-[150px] resize-none border-white/30 bg-white/20 text-white placeholder:text-white/60"
                                   {...field}
-                                  disabled={isSubmitting}
+                                  disabled={isSubmitting || isPreparingForm}
                                 />
                               </FormControl>
                               <FormMessage className="text-white/80" />
@@ -419,10 +508,16 @@ const ContactSection = () => {
                         <Button
                           type="submit"
                           className="relative w-full border-white/30 bg-white/20 text-white transition-all duration-200 hover:bg-white/30"
-                          disabled={isSubmitting}
+                          disabled={isSubmitting || isPreparingForm || !contactToken}
+                          aria-busy={isPreparingForm || isSubmitting}
                           size="lg"
                         >
-                          {isSubmitting ? (
+                          {isPreparingForm ? (
+                            <div className="flex items-center gap-2">
+                              <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                              <span>Preparing...</span>
+                            </div>
+                          ) : isSubmitting ? (
                             <div className="flex items-center gap-2">
                               <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
                               <span>Processing...</span>

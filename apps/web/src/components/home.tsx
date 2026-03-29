@@ -1,192 +1,156 @@
 "use client";
 
-import React, { useState, useEffect, useRef, lazy, Suspense } from "react";
+import React, { useEffect, useState, lazy, Suspense } from "react";
 import HeroSection from "./HeroSection";
 import IntroSection from "./IntroSection";
 import CareerEducationSection from "./CareerEducationSection";
 import { ThemeProvider } from "@/context/ThemeContext";
+import { deferHeavyWork, getNetworkStatus } from "@/lib/mobilePerformance";
 
-// Lazy load heavy components
 const ProjectsSection = lazy(() => import("./ProjectsSection"));
 const SkillsSection = lazy(() => import("./SkillsSection"));
-const ArtSection = lazy(() => import("./ArtSection"));
 const ContactSection = lazy(() => import("./ContactSection"));
 const ChatBot = lazy(() => import("./ChatBot"));
 
-// Loading Screen - Professional Design
-const LoadingScreen = ({ progress }: { progress: number }) => {
+const INTRO_SESSION_KEY = "portfolio:intro-seen";
+
+const LoadingScreen = ({ isCompact }: { isCompact: boolean }) => {
   return (
-    <div className="fixed inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-slate-950 to-black z-50 overflow-hidden">
-      {/* Simplified background - removed expensive mix-blend-multiply blobs */}
-      <div className="absolute inset-0 opacity-30">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 via-slate-950 to-slate-900"></div>
+    <div
+      aria-hidden="true"
+      className="fixed inset-0 z-50 overflow-hidden bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_38%),linear-gradient(135deg,_#020617_0%,_#0f172a_48%,_#111827_100%)]"
+    >
+      <div className="absolute inset-0 bg-[linear-gradient(120deg,transparent_0%,rgba(148,163,184,0.08)_45%,transparent_100%)] animate-[pulse_3s_ease-in-out_infinite]" />
+      <div className="absolute inset-0 opacity-40">
+        <div className="absolute left-[-10%] top-[18%] h-56 w-56 rounded-full bg-sky-400/20 blur-3xl" />
+        <div className="absolute bottom-[10%] right-[-8%] h-64 w-64 rounded-full bg-cyan-300/10 blur-3xl" />
       </div>
 
-      {/* Content Container */}
-      <div className="relative z-10 flex flex-col items-center justify-center">
-        {/* Main text */}
-        <h2 className="text-4xl sm:text-5xl font-bold text-white mb-2 text-center font-serif">
-          Welcome
+      <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 text-center">
+        <div className="mb-8 flex h-20 w-20 items-center justify-center rounded-[2rem] border border-white/15 bg-white/8 text-xl font-semibold tracking-[0.35em] text-white shadow-[0_20px_80px_rgba(15,23,42,0.45)] backdrop-blur-xl">
+          CDE
+        </div>
+        <p className="mb-3 text-xs font-semibold uppercase tracking-[0.5em] text-sky-200/80">
+          Carls Dale Escalo
+        </p>
+        <h2 className="max-w-2xl text-4xl font-bold text-white sm:text-5xl">
+          Building thoughtful products with clean systems and sharp execution.
         </h2>
-        <p className="text-lg text-slate-300 mb-12 text-center max-w-md">
-          Crafting digital experiences with precision and innovation
+        <p className="mt-5 max-w-xl text-sm leading-7 text-slate-300 sm:text-base">
+          The portfolio is opening with a lighter first-visit experience so the
+          site becomes interactive faster.
         </p>
 
-        {/* Progress Bar */}
-        <div className="w-72 space-y-4">
-          {/* Simplified progress bar without blur effect */}
-          <div className="relative">
-            <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
-              <div
-                className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-indigo-500 transition-all duration-300 rounded-full"
-                style={{ width: `${progress}%` }}
-              >
-                <div className="absolute inset-0 bg-white opacity-20 animate-shimmer"></div>
-              </div>
-            </div>
+        <div className="mt-10 w-full max-w-sm">
+          <div className="h-px overflow-hidden rounded-full bg-white/10">
+            <div
+              className={`h-full bg-gradient-to-r from-sky-300 via-cyan-200 to-blue-400 ${
+                isCompact
+                  ? "animate-[intro-line_0.45s_ease-out_forwards]"
+                  : "animate-[intro-line_1.2s_cubic-bezier(0.22,1,0.36,1)_forwards]"
+              }`}
+            />
           </div>
-
-          {/* Progress text */}
-          <div className="text-center">
-            <p className="text-3xl font-bold text-white font-mono">{progress}%</p>
-            <p className="text-sm text-slate-400 mt-1">
-              {progress < 25 ? "Initializing..." : progress < 50 ? "Loading resources..." : progress < 75 ? "Optimizing..." : "Almost there..."}
-            </p>
-          </div>
-        </div>
-
-        {/* Loading dots */}
-        <div className="flex gap-2 mt-10">
-          <div className="w-3 h-3 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: "0s" }}></div>
-          <div className="w-3 h-3 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
-          <div className="w-3 h-3 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: "0.4s" }}></div>
+          <p className="mt-4 text-xs uppercase tracking-[0.35em] text-slate-400">
+            Preparing experience
+          </p>
         </div>
       </div>
     </div>
   );
 };
 
-// Lazy section fallback - lightweight skeleton loader
 const SectionSkeleton = () => (
   <div className="min-h-96 bg-gradient-to-b from-gray-100 to-gray-50 dark:from-gray-900 dark:to-gray-800 animate-pulse" />
 );
 
-// Home Page
 const Home = () => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [progress, setProgress] = useState(0);
+  const [showIntro, setShowIntro] = useState(false);
+  const [isCompactIntro, setIsCompactIntro] = useState(false);
+  const [shouldMountChatBot, setShouldMountChatBot] = useState(false);
 
-  // Refs keep section navigation flexible without coupling scroll logic to the
-  // child components themselves.
-  const sectionRefs = {
-    hero: useRef(null),
-    intro: useRef(null),
-    projects: useRef(null),
-    skills: useRef(null),
-    art: useRef(null),
-    contact: useRef(null),
-  };
-
-  // Use a short, deterministic intro loader rather than waiting on DOM image
-  // bookkeeping, which can leave the page stuck behind the overlay in Next.js.
   useEffect(() => {
-    let currentProgress = 0;
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const network = getNetworkStatus();
+    const hasSeenIntro =
+      window.sessionStorage.getItem(INTRO_SESSION_KEY) === "1";
+    const compactIntro =
+      mediaQuery.matches || network.saveData || network.isSlowNetwork;
 
-    const progressTimer = window.setInterval(() => {
-      currentProgress += 10;
-      setProgress(Math.min(currentProgress, 90));
-    }, 80);
+    setIsCompactIntro(compactIntro);
+
+    if (hasSeenIntro) {
+      return;
+    }
+
+    setShowIntro(true);
+    window.sessionStorage.setItem(INTRO_SESSION_KEY, "1");
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
 
     const revealTimer = window.setTimeout(() => {
-      window.clearInterval(progressTimer);
-      setProgress(100);
-      window.setTimeout(() => {
-        setIsLoading(false);
-      }, 180);
-    }, 900);
+      setShowIntro(false);
+      document.body.style.overflow = originalOverflow;
+    }, compactIntro ? 350 : 1150);
 
     return () => {
-      window.clearInterval(progressTimer);
       window.clearTimeout(revealTimer);
+      document.body.style.overflow = originalOverflow;
     };
   }, []);
 
-  // Smooth scroll for any remaining anchor links
   useEffect(() => {
-    const handleNavClick = (e) => {
-      const href = e.currentTarget.getAttribute("href");
-      if (href && href.startsWith("#")) {
-        e.preventDefault();
-        const targetId = href.substring(1);
-        const targetElement = document.getElementById(targetId);
-        if (targetElement)
-          window.scrollTo({
-            top: targetElement.offsetTop,
-            behavior: "smooth",
-          });
-      }
-    };
-
-    const navLinks = document.querySelectorAll("a[href^='#']");
-    navLinks.forEach((link) => link.addEventListener("click", handleNavClick));
+    const cancelDeferredMount = deferHeavyWork(() => {
+      setShouldMountChatBot(true);
+    }, 1800);
 
     return () => {
-      navLinks.forEach((link) =>
-        link.removeEventListener("click", handleNavClick)
-      );
+      cancelDeferredMount();
     };
   }, []);
 
   return (
     <>
-      {isLoading && <LoadingScreen progress={progress} />}
+      {showIntro ? <LoadingScreen isCompact={isCompactIntro} /> : null}
 
       <ThemeProvider>
-        <div
-          className={`min-h-screen bg-background text-foreground ${
-            isLoading
-              ? "opacity-0"
-              : "opacity-100 transition-opacity duration-700"
-          }`}
-        >
-          <section id="hero" ref={sectionRefs.hero}>
+        <div className="min-h-screen bg-background text-foreground">
+          <section id="hero">
             <HeroSection />
           </section>
-          <section id="about-me" ref={sectionRefs.intro}>
+          <section id="about-me">
             <IntroSection />
           </section>
           <section id="career-education">
             <CareerEducationSection />
           </section>
-          <section id="projects" ref={sectionRefs.projects}>
+          <section id="projects">
             <Suspense fallback={<SectionSkeleton />}>
               <ProjectsSection />
             </Suspense>
           </section>
-          <section id="skills" ref={sectionRefs.skills}>
+          <section id="skills">
             <Suspense fallback={<SectionSkeleton />}>
               <SkillsSection />
             </Suspense>
           </section>
-          <section id="art" ref={sectionRefs.art}>
-            <Suspense fallback={<SectionSkeleton />}>
-              <ArtSection />
-            </Suspense>
-          </section>
-          <section id="contact" ref={sectionRefs.contact}>
+          <section id="contact">
             <Suspense fallback={<SectionSkeleton />}>
               <ContactSection />
             </Suspense>
           </section>
 
-          <Suspense fallback={null}>
-            <ChatBot />
-          </Suspense>
+          {shouldMountChatBot ? (
+            <Suspense fallback={null}>
+              <ChatBot />
+            </Suspense>
+          ) : null}
         </div>
 
-        <footer className="py-10 text-center text-base text-muted-foreground border-t border-border">
+        <footer className="border-t border-border py-10 text-center text-base text-muted-foreground">
           <div className="container mx-auto px-4">
-            <p>© {new Date().getFullYear()} - Carls Dale Escalo</p>
+            <p>&copy; {new Date().getFullYear()} - Carls Dale Escalo</p>
             <div className="mt-4 flex justify-center space-x-6 text-lg">
               <a
                 href="https://github.com/wardslarc"

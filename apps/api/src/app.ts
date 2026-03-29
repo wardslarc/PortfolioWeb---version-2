@@ -5,6 +5,7 @@ import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import pinoHttp from "pino-http";
 import { env } from "./config/env";
+import { verifyContactToken } from "./lib/contactSecurity";
 import { logger } from "./lib/logger";
 import { checkDatabaseReadiness } from "./lib/mongodb";
 import { REQUEST_ID_HEADER, requestIdMiddleware } from "./lib/requestId";
@@ -18,11 +19,10 @@ const parseOrigins = (value: string | undefined) =>
     .map((item) => item.trim())
     .filter(Boolean);
 
-const developmentOrigins = ["http://localhost:3000", "http://127.0.0.1:3000"];
-
 const normalizeText = (value: string) => value.replace(/\s+/g, " ").trim();
 
 const truncate = (value: string, maxLength: number) => value.slice(0, maxLength);
+const PROXY_SECRET_HEADER = "x-contact-proxy-secret";
 
 const getRequestOrigin = (req: express.Request) => {
   const origin = req.header("origin");
@@ -32,13 +32,7 @@ const getRequestOrigin = (req: express.Request) => {
 const getAllowedOrigins = () =>
   env.NODE_ENV === "production"
     ? parseOrigins(env.CONTACT_ALLOWED_PRODUCTION_ORIGINS)
-    : Array.from(
-        new Set([
-          ...developmentOrigins,
-          ...parseOrigins(env.ALLOWED_ORIGINS),
-          ...parseOrigins(env.WEB_ORIGIN),
-        ]),
-      );
+    : Array.from(new Set([...parseOrigins(env.ALLOWED_ORIGINS), ...parseOrigins(env.WEB_ORIGIN)]));
 
 const isAllowedOrigin = (origin: string) => getAllowedOrigins().includes(origin);
 
@@ -66,12 +60,64 @@ const buildFingerprint = (submission: {
 
 const getSubmissionAge = (timestamp: number) => Date.now() - timestamp;
 
+const countLinks = (value: string) => (value.match(/(?:https?:\/\/|www\.)/gi) || []).length;
+
+const hasLongRepeatedCharacterSequence = (value: string) => /(.)\1{9,}/i.test(value);
+
+const hasExcessiveRepeatedWords = (value: string) => {
+  const words = value
+    .toLowerCase()
+    .split(/[^a-z0-9]+/i)
+    .filter((word) => word.length >= 3);
+
+  if (words.length < 6) {
+    return false;
+  }
+
+  const counts = new Map<string, number>();
+
+  for (const word of words) {
+    counts.set(word, (counts.get(word) || 0) + 1);
+  }
+
+  return Array.from(counts.values()).some((count) => count >= 6 || count / words.length > 0.45);
+};
+
+const looksLikeSpam = (submission: {
+  name: string;
+  subject: string;
+  message: string;
+}) => {
+  if (countLinks(submission.message) > 3) {
+    return true;
+  }
+
+  if (
+    hasLongRepeatedCharacterSequence(submission.name) ||
+    hasLongRepeatedCharacterSequence(submission.subject) ||
+    hasLongRepeatedCharacterSequence(submission.message)
+  ) {
+    return true;
+  }
+
+  if (
+    countLinks(submission.name) > 0 ||
+    countLinks(submission.subject) > 1 ||
+    hasExcessiveRepeatedWords(submission.subject) ||
+    hasExcessiveRepeatedWords(submission.message)
+  ) {
+    return true;
+  }
+
+  return false;
+};
+
 export const createApp = (
   repository: ContactRepository = createMongoContactRepository(),
 ) => {
   const app = express();
 
-  app.set("trust proxy", 1);
+  app.set("trust proxy", env.TRUST_PROXY_HOPS);
   app.disable("x-powered-by");
 
   app.use(requestIdMiddleware);
@@ -143,6 +189,23 @@ export const createApp = (
     next();
   };
 
+  const requireProxySecret: express.RequestHandler = (req, res, next) => {
+    if (!env.CONTACT_PROXY_SHARED_SECRET) {
+      next();
+      return;
+    }
+
+    const providedSecret = req.header(PROXY_SECRET_HEADER);
+
+    if (providedSecret !== env.CONTACT_PROXY_SHARED_SECRET) {
+      req.log.warn("Rejected contact request without valid proxy secret");
+      res.status(403).json({ error: "Invalid contact submission source." });
+      return;
+    }
+
+    next();
+  };
+
   app.get("/api/health", (_req, res) => {
     res.status(200).json({ ok: true });
   });
@@ -156,7 +219,12 @@ export const createApp = (
     }
   });
 
-  app.post("/api/contact", contactWriteLimiter, requireTrustedOrigin, async (req, res) => {
+  app.post(
+    "/api/contact",
+    contactWriteLimiter,
+    requireProxySecret,
+    requireTrustedOrigin,
+    async (req, res) => {
     if (!req.is("application/json")) {
       res.status(415).json({ error: "Content-Type must be application/json" });
       return;
@@ -195,6 +263,39 @@ export const createApp = (
       subject: normalizeText(parsed.data.subject),
       message: normalizeText(parsed.data.message),
     };
+
+    const tokenCheck = verifyContactToken(parsed.data.contactToken);
+
+    if (!tokenCheck.ok) {
+      req.log.warn({ reason: tokenCheck.reason }, "Rejected contact submission with invalid token");
+      res.status(400).json({ error: "Unable to verify contact form session." });
+      return;
+    }
+
+    const requestOrigin = getRequestOrigin(req);
+
+    if (requestOrigin && tokenCheck.payload.origin !== requestOrigin) {
+      req.log.warn(
+        { requestOrigin, tokenOrigin: tokenCheck.payload.origin },
+        "Rejected contact submission due to origin mismatch",
+      );
+      res.status(400).json({ error: "Unable to verify contact form origin." });
+      return;
+    }
+
+    if (Math.abs(parsed.data.timestamp - tokenCheck.payload.iat) > 5000) {
+      req.log.warn("Rejected contact submission with mismatched token timestamp");
+      res.status(400).json({ error: "Unable to verify contact form timing." });
+      return;
+    }
+
+    if (looksLikeSpam(normalizedPayload)) {
+      req.log.warn("Rejected contact submission due to spam heuristics");
+      res.status(400).json({
+        error: "Message looks automated or repetitive. Please revise it and try again.",
+      });
+      return;
+    }
 
     const fingerprint = buildFingerprint(normalizedPayload);
     const duplicateCutoff = new Date(Date.now() - env.CONTACT_DUPLICATE_WINDOW_MS);
@@ -240,7 +341,8 @@ export const createApp = (
         error: "Unable to save message at the moment.",
       });
     }
-  });
+    },
+  );
 
   app.use((_req, res) => {
     res.status(404).json({ error: "Route not found" });

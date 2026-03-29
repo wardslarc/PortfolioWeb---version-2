@@ -5,7 +5,7 @@
 
 export interface NetworkStatus {
   isSlowNetwork: boolean;
-  effectiveType: '4g' | '3g' | '2g' | '5g' | 'unknown';
+  effectiveType: "slow-2g" | "2g" | "3g" | "4g" | "5g" | "unknown";
   saveData: boolean;
 }
 
@@ -13,20 +13,23 @@ export interface NetworkStatus {
  * Get current network status (for mobile optimization)
  */
 export const getNetworkStatus = (): NetworkStatus => {
-  const connection = (navigator as any).connection || 
-                    (navigator as any).mozConnection || 
-                    (navigator as any).webkitConnection;
+  const connection =
+    (navigator as any).connection ||
+    (navigator as any).mozConnection ||
+    (navigator as any).webkitConnection;
 
   if (connection) {
+    const effectiveType = connection.effectiveType || "unknown";
+
     return {
-      effectiveType: connection.effectiveType || 'unknown',
-      isSlowNetwork: connection.effectiveType === '3g' || connection.effectiveType === '4g',
+      effectiveType,
+      isSlowNetwork: ["slow-2g", "2g", "3g"].includes(effectiveType),
       saveData: connection.saveData || false,
     };
   }
 
   return {
-    effectiveType: 'unknown',
+    effectiveType: "unknown",
     isSlowNetwork: false,
     saveData: false,
   };
@@ -42,12 +45,12 @@ export const getAnimationDuration = (
   if (!networkStatus) {
     networkStatus = getNetworkStatus();
   }
-  
+
   // On slow networks or with save-data enabled, reduce animations
   if (networkStatus.isSlowNetwork || networkStatus.saveData) {
     return Math.min(normalDuration * 0.5, 0.2); // Max 0.2s on slow networks
   }
-  
+
   return normalDuration;
 };
 
@@ -86,7 +89,7 @@ export const preloadImage = (src: string): Promise<void> => {
  */
 export const isMobileDevice = (): boolean => {
   if (typeof window === 'undefined') return false;
-  
+
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
     navigator.userAgent
   );

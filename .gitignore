@@ -12,6 +12,7 @@ node_modules
 .vercel
 apps/*/.next
 apps/*/.vercel
+apps/*/.test-dist
 dist
 dist-ssr
 *.local
